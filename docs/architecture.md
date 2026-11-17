@@ -44,6 +44,14 @@ The GearsBot emulator is not integrated, only linked.
 - `.env.example` documents every variable.
 - A single settings module; dev/prod differences only via environment variables.
 
+## Docker image
+
+- `Dockerfile`: `python:3.14-slim` + uv; dependencies installed with
+  `uv sync --locked --no-dev` into `/opt/venv`; static files collected at build
+  time; runs as non-root user `app`; default command is Gunicorn on port 8000.
+- `compose.yaml` (development): `db` (PostgreSQL 18, volume `postgres_data`)
+  and `web` (bind-mounted source, `migrate` + `runserver` on start).
+
 ## Build and deployment
 
 1. Merge to `main` → GitHub Actions: Ruff, tests, then build the Docker image

@@ -33,32 +33,32 @@ Rationale: see [`docs/decisions/`](docs/decisions/).
 
 ## Local development
 
-> These commands apply once the Django skeleton is in place.
+Requirements: Docker (with the buildx plugin) and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-cp .env.example .env          # adjust values, never commit .env
-docker compose up --build     # start web + PostgreSQL
-docker compose exec web uv run python manage.py migrate
-docker compose exec web uv run python manage.py createsuperuser
+cp .env.example .env          # set SECRET_KEY and passwords, never commit .env
+docker compose up --build     # start web + PostgreSQL, migrations run automatically
+docker compose exec web python manage.py createsuperuser
 ```
 
 Site: <http://localhost:8000> · Admin: <http://localhost:8000/admin/>
 
-Without Docker (Django on the host, PostgreSQL still required):
+The project directory is mounted into the container, so code changes reload
+automatically. After changing dependencies (`uv add …`), rebuild with
+`docker compose up --build`.
+
+Common tasks:
 
 ```bash
-uv sync                       # create .venv from uv.lock
-# set DATABASE_URL in .env to a reachable PostgreSQL, e.g. localhost
-uv run python manage.py runserver
+docker compose exec web python manage.py test        # tests (inside Docker)
+docker compose exec web python manage.py makemigrations
+uv run ruff check . --fix && uv run ruff format .    # lint/format (on the host)
+docker compose down                                  # stop (data is kept)
+docker compose down -v                               # stop and delete the database
 ```
 
-Quality checks:
-
-```bash
-uv run ruff check .
-uv run ruff format .
-uv run python manage.py test
-```
+Inside the container the virtualenv is on `PATH`, so use `python manage.py …`
+directly (not `uv run`).
 
 ## Documentation
 
