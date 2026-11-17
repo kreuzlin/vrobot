@@ -28,3 +28,6 @@ htmlcov/
 docker-compose.override.yml
 /data/
 /backups/
+
+# Server-specific Caddy snippets (see deploy/caddy.d/README.md)
+/deploy/caddy.d/*.caddy

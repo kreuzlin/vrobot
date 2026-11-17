@@ -66,6 +66,7 @@ directly (not `uv run`).
 
 - [`CLAUDE.md`](CLAUDE.md) – working rules for Claude Code (and humans)
 - [`docs/architecture.md`](docs/architecture.md) – structure, deployment, operations
+- [`docs/deployment.md`](docs/deployment.md) – server setup, deployments, backups
 - [`docs/data-model.md`](docs/data-model.md) – data model
 - [`docs/decisions/`](docs/decisions/) – Architecture Decision Records (ADRs)
 - [`docs/editor-guide.md`](docs/editor-guide.md) – guide for editors (German)
