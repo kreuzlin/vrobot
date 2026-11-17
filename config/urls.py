@@ -6,6 +6,8 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
+from core.views import markdown_preview
+
 admin.site.site_header = "VRoboT – Verwaltung"
 admin.site.site_title = "VRoboT Verwaltung"
 admin.site.index_title = "Inhalte verwalten"
@@ -37,6 +39,8 @@ password_reset_urls = [
 
 urlpatterns = [
     *password_reset_urls,
+    # Before admin.site.urls, whose catch-all view would otherwise match.
+    path("admin/markdown-preview/", markdown_preview, name="markdown_preview"),
     path("admin/", admin.site.urls),
     path("agenda/", include("events.urls")),
     path("beitraege/", include("posts.urls")),

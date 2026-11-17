@@ -86,6 +86,8 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 - Templates extend `base.html`. New sections get a main navigation entry in
   `core/navigation.py`.
 - Styles live in `core/static/core/css/site.css` (plain CSS, no framework).
+  Rich text styles (`.prose`) live in `prose.css`, which the admin editor
+  preview loads too – keep it self-contained (no dependency on `site.css`).
   Colours from the logo as CSS variables: black `#1A1A1A` (text), red
   `#E2000A` (accents only), grey `#939CA4` (lines/decoration only – too light
   for text; use `--text-muted` instead). Errors must not rely on red alone.

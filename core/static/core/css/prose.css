@@ -1,0 +1,121 @@
+/* Rich text (Markdown output) – shared by the website and the admin editor
+ * preview, so editors see their text the way it will appear on the site.
+ *
+ * Self-contained: the admin does not load site.css, so every rule here sets
+ * its own font, colours and spacing (colour variables fall back to the logo
+ * colours when site.css is absent).
+ */
+
+.prose {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.075rem;
+  line-height: 1.6;
+  color: var(--text, #1a1a1a);
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose pre {
+  margin: 1em 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose ul li {
+  list-style-type: disc;
+}
+
+.prose ol li {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin: 0.25em 0;
+  padding: 0;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin: 1.8em 0 0.6em;
+  padding: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text, #1a1a1a);
+  background: none;
+  text-transform: none;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 750;
+}
+
+.prose h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.prose h4 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.prose a,
+.prose a:link,
+.prose a:visited {
+  color: var(--text, #1a1a1a);
+  text-decoration: underline;
+  text-decoration-color: var(--red, #e2000a);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.prose a:hover {
+  color: var(--red-dark, #b8000a);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: 0.25rem 0 0.25rem 1.1rem;
+  border-left: 4px solid var(--red, #e2000a);
+  color: var(--text-muted, #555c63);
+}
+
+.prose code {
+  padding: 0.1em 0.3em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  color: inherit;
+  background: var(--grey-lighter, #f4f5f7);
+  border-radius: 0.25rem;
+}
+
+.prose pre {
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  background: var(--grey-lighter, #f4f5f7);
+  border-radius: 0.25rem;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 2px solid var(--grey-light, #e6e9ec);
+  margin-block: 2rem;
+}

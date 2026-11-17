@@ -123,3 +123,45 @@ class DashboardTests(TestCase):
         self.client.force_login(user)
         response = self.client.get(reverse("admin:index"))
         self.assertNotContains(response, reverse("admin:posts_post_add"))
+
+
+class MarkdownPreviewTests(TestCase):
+    url = reverse("markdown_preview")
+
+    def test_renders_like_the_website(self):
+        self.client.force_login(make_editor())
+        response = self.client.post(self.url, {"text": "# Titel\n\n**fett**"})
+        self.assertEqual(response.status_code, 200)
+        self.assertInHTML("<h2>Titel</h2>", response.content.decode())
+        self.assertInHTML("<strong>fett</strong>", response.content.decode())
+
+    def test_sanitises_html(self):
+        self.client.force_login(make_editor())
+        response = self.client.post(self.url, {"text": "<script>alert(1)</script>"})
+        self.assertNotIn(b"<script", response.content)
+
+    def test_requires_staff(self):
+        response = self.client.post(self.url, {"text": "Hallo"})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("admin:login"), response["Location"])
+
+        visitor = get_user_model().objects.create_user("besuch", password="x-123")
+        self.client.force_login(visitor)
+        response = self.client.post(self.url, {"text": "Hallo"})
+        self.assertEqual(response.status_code, 302)
+
+    def test_rejects_get(self):
+        self.client.force_login(make_editor())
+        self.assertEqual(self.client.get(self.url).status_code, 405)
+
+    def test_enforces_csrf(self):
+        client = self.client_class(enforce_csrf_checks=True)
+        client.force_login(make_editor())
+        response = client.post(self.url, {"text": "Hallo"})
+        self.assertEqual(response.status_code, 403)
+
+    def test_editor_form_points_to_preview_and_loads_prose_css(self):
+        self.client.force_login(make_editor())
+        response = self.client.get(reverse("admin:posts_post_add"))
+        self.assertContains(response, f'data-preview-url="{self.url}"')
+        self.assertContains(response, "core/css/prose.css")
