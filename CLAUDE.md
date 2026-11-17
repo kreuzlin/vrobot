@@ -41,7 +41,18 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 
 ## Workflow
 
+- **Pull requests.** The default branch is `main`. Never commit or push
+  directly to `main`.
+  - Each step gets its own branch from an up-to-date `main`, named
+    `<type>/<short-description>` (e.g. `feat/events`, `fix/contact-form`,
+    `docs/…`, `chore/…`).
+  - Push the branch and open a PR against `main` with `gh pr create`; the PR
+    description (English) explains what changed and how it was tested.
+  - The maintainer reviews and merges the PR. Do not merge PRs yourself
+    unless explicitly asked.
+  - Once CI exists, a PR is only ready when CI is green.
 - **Small steps.** Commit after every working step (tests green, Ruff clean).
+  Keep PRs small – one step of the plan per PR.
 - Before committing: `uv run ruff check . && uv run ruff format --check . && uv run python manage.py test`.
 - Tests cover the most important behaviour (e.g. events calendar hides past
   events, contact form incl. spam protection, post visibility, page titles and

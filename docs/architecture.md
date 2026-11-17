@@ -43,7 +43,7 @@ The GearsBot emulator is not integrated, only linked.
 
 ## Build and deployment
 
-1. Push to `master` → GitHub Actions: Ruff, tests, then build the Docker image
+1. Merge to `main` → GitHub Actions: Ruff, tests, then build the Docker image
    for `linux/amd64` and push it to the GitHub Container Registry (GHCR).
 2. On the server: `docker compose pull && docker compose up -d`, then
    `migrate` (details to follow once deployment is set up).
