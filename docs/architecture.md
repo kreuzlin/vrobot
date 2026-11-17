@@ -32,7 +32,9 @@ Volumes: `postgres_data`, `media`, `static`, `caddy_data` (certificates).
 | `pages`     | Static pages (About us, Get involved)                 |
 | `contact`   | Contact form with spam protection, email via Hostpoint SMTP |
 
-The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
+The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`). The
+old site hosted its own copy under `/python/public/`; we link the official
+instance instead (maintainer decision), and the old path will redirect there.
 
 ### `core` in detail
 
@@ -160,8 +162,20 @@ image is only built in CI.
 
 Crontab: see [`deployment.md`](deployment.md).
 
+## Content migration from the old site
+
+`python manage.py import_old_site` (one-time, idempotent) takes over the
+content of the old PHP site: texts of "Über uns", "Mitmachen" and "Kontakt"
+(spelling fixes only), the single post (2020) and the documents (statutes,
+membership form, annual reports), downloaded from `vrobot.ch/attachments/`.
+Pages are only overwritten while they still hold the placeholder text
+(`--force` overrides); `--dry-run` saves nothing.
+
+Not migrated (maintainer decisions): the self-hosted GearsBot copy (official
+instance is linked), the Twitter link, the outdated orange payment slip
+(`EZS_VRoboT.jpg`, invalid since 2022). The old agenda was empty.
+
 ## Open questions
 
 - HSTS: not sent during the test phase; enable in Caddy at go-live (HTTP→HTTPS
   redirects are done by Caddy automatically)
-- Which content to migrate from the old site

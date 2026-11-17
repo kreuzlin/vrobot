@@ -104,6 +104,8 @@ Then:
 ```bash
 scripts/deploy.sh
 docker compose -f compose.prod.yaml exec web python manage.py createsuperuser
+# Content of the old site (one-time; try --dry-run first)
+docker compose -f compose.prod.yaml exec web python manage.py import_old_site
 ```
 
 Check `https://www2.vrobot.ch/`, log in to `/admin/`, send a test message via
@@ -136,7 +138,10 @@ are not rolled back automatically.
 0 2 * * * cd /srv/vrobot && scripts/backup-db.sh
 ```
 
-Schedule the UpCloud backup (ADR 0008) after 02:00 so it includes the dump.
+The server's time zone is `Europe/Zurich` (`timedatectl set-timezone
+Europe/Zurich`, then `systemctl restart cron`), so cron times are Swiss time.
+The UpCloud backup runs daily at 02:15 UTC (03:15/04:15 Swiss time), i.e.
+after the dump (ADR 0008).
 
 ## 6. Backups and restore
 
