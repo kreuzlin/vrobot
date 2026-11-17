@@ -1,5 +1,7 @@
 # vrobot.ch
 
+[![CI](https://github.com/kreuzlin/vrobot/actions/workflows/ci.yml/badge.svg)](https://github.com/kreuzlin/vrobot/actions/workflows/ci.yml)
+
 Rebuild of the website of the **Verein Robotik Talente (VRoboT)**.
 
 The current PHP site on Hostpoint stays live until the new site is finished
