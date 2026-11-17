@@ -46,7 +46,10 @@ The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
   allowlist; `# ` headings become `<h2>`), template filter `|markdown`
 - `widgets.py`: `MarkdownEditor` admin widget using EasyMDE, vendored under
   `core/static/core/vendor/easymde/` (v2.21.0, MIT) with German text buttons,
-  so the admin loads no external resources
+  so the admin loads no external resources. Its preview is rendered by the
+  server (`POST /admin/markdown-preview/`, staff only, CSRF-protected) with
+  the same `render_markdown()` and styled with the shared `prose.css`, so it
+  looks like the published page
 
 ### Admin
 

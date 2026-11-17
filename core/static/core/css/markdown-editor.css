@@ -13,7 +13,44 @@
   max-width: 60rem;
 }
 
-.EasyMDEContainer .editor-preview h2,
-.EasyMDEContainer .editor-preview h3 {
-  margin-top: 1em;
+/* Preview: looks like the website (typography from prose.css). White even
+ * in the admin's dark theme, because the website is white. */
+.EasyMDEContainer .editor-preview.prose {
+  padding: 1.5rem 2rem;
+  background: #fff;
+  color-scheme: light;
+}
+
+.EasyMDEContainer .editor-preview.prose > * {
+  /* Same line length as on the website's text pages. */
+  max-width: 44rem;
+}
+
+/* The admin's form styles (e.g. `form .aligned ul`, `form .aligned ul li`)
+ * are more specific than prose.css; restore the website look in the preview. */
+.EasyMDEContainer .editor-preview.prose ul,
+.EasyMDEContainer .editor-preview.prose ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+
+.EasyMDEContainer .editor-preview.prose ul li {
+  list-style: disc;
+}
+
+.EasyMDEContainer .editor-preview.prose ol li {
+  list-style: decimal;
+}
+
+.EasyMDEContainer .editor-preview.prose :is(p, li, blockquote) {
+  font-size: inherit;
+}
+
+/* Active/hovered toolbar buttons (e.g. "Vorschau") stay readable in the
+ * admin's light and dark theme. */
+.editor-toolbar button.md-btn.active,
+.editor-toolbar button.md-btn:hover {
+  color: var(--body-fg);
+  background: var(--darkened-bg);
+  border-color: var(--border-color);
 }

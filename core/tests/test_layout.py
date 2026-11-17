@@ -64,6 +64,10 @@ class HomePageTests(TestCase):
             'property="og:image" content="http://testserver/static/core/img/logo-full-960.png"',
         )
 
+    def test_loads_shared_prose_styles(self):
+        # prose.css is shared with the admin editor preview.
+        self.assertContains(self.response, "core/css/prose.css")
+
     def test_footer_lists_navigation(self):
         footer = self.response.content.decode().split('class="site-footer"')[1]
         for url_name in [

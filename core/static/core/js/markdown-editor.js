@@ -8,6 +8,50 @@
     return { name: name, action: action, icon: label, className: "md-btn", title: title || label };
   }
 
+  // CSRF token from the admin form the editor sits in.
+  function csrfToken(textarea) {
+    var form = textarea.form || document;
+    var input = form.querySelector("input[name=csrfmiddlewaretoken]");
+    return input ? input.value : "";
+  }
+
+  // Preview rendered by the server (core.views.markdown_preview), so it uses
+  // the same Markdown renderer and sanitiser as the website. EasyMDE expects
+  // the HTML synchronously: return the current content (or a loading note)
+  // and fill in the server's answer when it arrives.
+  function serverPreview(textarea) {
+    var url = textarea.dataset.previewUrl;
+    var pending = 0;
+
+    return function (plainText, preview) {
+      var request = ++pending;
+      var body = new URLSearchParams();
+      body.append("text", plainText);
+      fetch(url, {
+        method: "POST",
+        body: body,
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfToken(textarea) },
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error(response.status);
+          return response.text();
+        })
+        .then(function (html) {
+          // Ignore answers to older requests that arrive late.
+          if (request === pending) preview.innerHTML = html;
+        })
+        .catch(function () {
+          if (request === pending) {
+            preview.innerHTML =
+              "<p><strong>Die Vorschau konnte nicht geladen werden.</strong> " +
+              "Ist die Anmeldung abgelaufen? Der Text geht dabei nicht verloren.</p>";
+          }
+        });
+      return preview.innerHTML || "<p>Vorschau wird geladen …</p>";
+    };
+  }
+
   function init(textarea) {
     if (textarea.dataset.mdInitialised) return;
     textarea.dataset.mdInitialised = "1";
@@ -38,6 +82,8 @@
           title: "Vorschau ein/aus",
         }),
       ],
+      previewClass: ["editor-preview", "prose"],
+      previewRender: serverPreview(textarea),
       promptURLs: true,
       promptTexts: { link: "Adresse des Links (https://…):" },
     });

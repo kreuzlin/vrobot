@@ -30,7 +30,7 @@ Beiträge und Seiten haben einen Editor mit Knöpfen:
 | Nummerierung   | Liste mit Zahlen                         |
 | Zitat          | eingerückter Zitatblock                  |
 | Link           | markierten Text verlinken                |
-| Vorschau       | Ergebnis anzeigen (nochmals klicken = zurück) |
+| Vorschau       | Text so anzeigen, wie er auf der Website erscheint (nochmals klicken = zurück) |
 
 Ein **leerer Absatz** trennt Abschnitte. Schriftarten, Farben oder Grössen gibt
 es absichtlich nicht – so sieht die Website überall einheitlich aus.
