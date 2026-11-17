@@ -15,6 +15,16 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ["title", "body", "author"]
     date_hierarchy = "published_at"
     prepopulated_fields = {"slug": ["title"]}
+
+    class Media:
+        js = ["core/js/image-alt-required.js"]
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        field = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "image":
+            field.widget.attrs["data-alt-field"] = "id_image_alt"
+        return field
+
     fieldsets = [
         (None, {"fields": ["title", "body"]}),
         ("Bild", {"fields": ["image", "image_alt"]}),

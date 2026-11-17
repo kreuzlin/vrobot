@@ -35,7 +35,10 @@ class Post(models.Model):
     )
     body = models.TextField("Text", help_text=MARKDOWN_HELP_TEXT)
     image = models.ImageField(
-        "Bild", upload_to=post_image_path, blank=True, help_text="Optional."
+        "Bild",
+        upload_to=post_image_path,
+        blank=True,
+        help_text="Optional. Mit Bild ist die Bildbeschreibung Pflicht.",
     )
     image_alt = models.CharField(
         "Bildbeschreibung",
@@ -81,7 +84,10 @@ class Post(models.Model):
     def clean(self):
         if self.image and not self.image_alt:
             raise ValidationError(
-                {"image_alt": "Bitte beschreibe kurz, was auf dem Bild zu sehen ist."}
+                {
+                    "image_alt": "Bitte beschreibe kurz, was auf dem Bild zu sehen "
+                    "ist. Achtung: Das Bild muss danach erneut ausgewählt werden."
+                }
             )
 
     def get_meta_description(self):

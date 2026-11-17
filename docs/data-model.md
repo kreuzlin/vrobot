@@ -12,7 +12,7 @@ Admin labels (`verbose_name`) are German; field names are English.
 | `slug`             | SlugField, unique     | for the URL, prefilled from the title       |
 | `body`             | TextField             | Markdown, rendered and sanitised (ADR 0009) |
 | `image`            | ImageField, optional  | stored under `media/posts/<year>/`          |
-| `image_alt`        | CharField             | required when an image is set               |
+| `image_alt`        | CharField             | required when an image is set (also enforced in the browser, so the chosen file is not lost on form errors) |
 | `author`           | CharField             | display name; prefilled with the admin user's name |
 | `published_at`     | DateTimeField         | posts dated in the future are not visible yet |
 | `is_published`     | BooleanField          | draft vs. published                         |

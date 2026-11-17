@@ -168,3 +168,8 @@ class AdminTests(TestCase):
         self.assertContains(response, 'class="markdown-editor"')
         self.assertContains(response, "core/vendor/easymde/easymde.min.js")
         self.assertContains(response, 'value="Erika Muster"')
+
+    def test_image_input_is_linked_to_alt_text_field(self):
+        response = self.client.get(reverse("admin:posts_post_add"))
+        self.assertContains(response, 'data-alt-field="id_image_alt"')
+        self.assertContains(response, "core/js/image-alt-required.js")
