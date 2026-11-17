@@ -10,7 +10,7 @@ and DNS is switched over.
 | Area          | Choice                                                   |
 |---------------|----------------------------------------------------------|
 | Framework     | Django 5.2 LTS, Django templates (no SPA)                |
-| Language      | Python, dependencies managed with [uv](https://docs.astral.sh/uv/) |
+| Language      | Python 3.14, dependencies managed with [uv](https://docs.astral.sh/uv/) |
 | Lint/format   | Ruff                                                     |
 | Database      | PostgreSQL                                               |
 | Runtime       | Docker Compose (local and on the server)                 |
@@ -43,6 +43,14 @@ docker compose exec web uv run python manage.py createsuperuser
 ```
 
 Site: <http://localhost:8000> · Admin: <http://localhost:8000/admin/>
+
+Without Docker (Django on the host, PostgreSQL still required):
+
+```bash
+uv sync                       # create .venv from uv.lock
+# set DATABASE_URL in .env to a reachable PostgreSQL, e.g. localhost
+uv run python manage.py runserver
+```
 
 Quality checks:
 

@@ -36,6 +36,9 @@ The GearsBot emulator is not integrated, only linked.
 
 ## Configuration
 
+- Settings: `config/settings.py`, values read with `django-environ`.
+- Python 3.14 (`.python-version`), dependencies in `pyproject.toml` / `uv.lock`.
+
 - All environment-specific values come from environment variables in `.env`
   (`SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`, email credentials …).
 - `.env.example` documents every variable.
@@ -66,5 +69,7 @@ image is only built in CI.
 
 ## Open questions
 
+- Production hardening: HSTS and HTTP→HTTPS redirect (Caddy vs. Django),
+  to be settled with the production setup
 - Basic Auth on `www2` during the test phase: yes or no
 - Which content to migrate from the old site
