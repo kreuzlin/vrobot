@@ -2,11 +2,12 @@
 
 import shutil
 import tempfile
-from io import StringIO
+from io import BytesIO, StringIO
 from unittest import mock
 
 from django.core.management import call_command
 from django.test import TestCase, override_settings
+from PIL import Image
 
 from core.management.commands import import_old_site
 from documents.models import Document
@@ -16,6 +17,16 @@ from posts.models import Post
 FAKE_PDF = b"%PDF-1.4 fake"
 
 
+def fake_jpeg(width=4032, height=1833):
+    out = BytesIO()
+    Image.new("RGB", (width, height), "blue").save(out, "JPEG")
+    return out.getvalue()
+
+
+def fake_download(url):
+    return fake_jpeg() if url.endswith(".jpg") else FAKE_PDF
+
+
 class ImportOldSiteTests(TestCase):
     def setUp(self):
         media = tempfile.mkdtemp()
@@ -23,7 +34,9 @@ class ImportOldSiteTests(TestCase):
         settings_override = override_settings(MEDIA_ROOT=media)
         settings_override.enable()
         self.addCleanup(settings_override.disable)
-        patcher = mock.patch.object(import_old_site, "download", return_value=FAKE_PDF)
+        patcher = mock.patch.object(
+            import_old_site, "download", side_effect=fake_download
+        )
         self.download = patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -43,6 +56,10 @@ class ImportOldSiteTests(TestCase):
         post = Post.objects.get(slug="die-welt-braucht-arduino")
         self.assertTrue(post.is_visible())
         self.assertEqual(post.published_at.year, 2020)
+        self.assertTrue(post.image_alt)
+        with Image.open(post.image) as image:
+            # Scaled down from the 4032 px original.
+            self.assertEqual(image.width, import_old_site.POST_IMAGE_MAX_WIDTH)
 
         self.assertEqual(Document.objects.count(), len(import_old_site.DOCUMENTS))
         statuten = Document.objects.get(title="Statuten")

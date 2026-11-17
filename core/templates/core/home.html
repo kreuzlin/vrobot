@@ -3,12 +3,12 @@
 
 {% block content %}
   <section class="hero">
-    <img class="hero-logo"
-         src="{% static 'core/img/logo-full-480.png' %}"
-         srcset="{% static 'core/img/logo-full-480.png' %} 480w, {% static 'core/img/logo-full-960.png' %} 960w"
-         sizes="(max-width: 44rem) 11rem, 20rem"
-         width="480" height="380"
-         alt="Logo VRoboT – Verein Robotik Talente">
+    <img class="hero-photo"
+         src="{% static 'core/img/banners/home-600.jpg' %}"
+         srcset="{% static 'core/img/banners/home-600.jpg' %} 600w, {% static 'core/img/banners/home-1200.jpg' %} 1200w"
+         sizes="(max-width: 44rem) 100vw, 32rem"
+         width="1200" height="800"
+         alt="Lego-Mindstorms-Roboter vor einem Laptop">
     <div>
       <h1>{{ site_name }}</h1>
       <p class="lead">{{ site_description }}</p>

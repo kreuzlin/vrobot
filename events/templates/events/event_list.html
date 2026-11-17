@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  {% include "core/_banner.html" with name="agenda" %}
   <h1>Agenda</h1>
   {% if events %}
     <ul class="event-list">

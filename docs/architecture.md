@@ -176,6 +176,12 @@ The six topics of "Mitmachen" with their images are fixed in the template
 `pages/static/pages/img/topics/` (700×400 JPEG, from the old site). The
 editable page text is shown above them (`pages.views.JoinView`).
 
+The old site's header photos are fixed design images too:
+`core/static/core/img/banners/` – the home page photo (`home-*.jpg`, 3:2) and a
+decorative title image per fixed page and the agenda (`<slug>-{800,1600}.jpg`,
+16:9, cropped to 3:1 by CSS; `core/_banner.html`). The post "Die Welt braucht
+Arduino" gets its old header photo as post image (scaled to 1600 px).
+
 Not migrated (maintainer decisions): the self-hosted GearsBot copy (official
 instance is linked), the Twitter link, the outdated orange payment slip
 (`EZS_VRoboT.jpg`, invalid since 2022). The old agenda was empty.

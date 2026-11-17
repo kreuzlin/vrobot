@@ -14,12 +14,14 @@ Usage: python manage.py import_old_site [--dry-run] [--force]
 """
 
 import datetime
+import io
 import urllib.request
 from zoneinfo import ZoneInfo
 
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from PIL import Image
 
 from documents.models import Document, DocumentCategory
 from pages.models import Page
@@ -131,6 +133,14 @@ je nach Belieben Sensoren anschliessen und z.\u00a0B. Motoren ansteuern.
 """,
 }
 
+# Header image of the post on the old site; becomes the post image.
+POST_IMAGE = {
+    "url": f"{OLD_SITE}/img/arduino.jpg",
+    "filename": "arduino.jpg",
+    "alt": "Arduino-Platinen, ein Display und weitere Elektronikbauteile",
+}
+POST_IMAGE_MAX_WIDTH = 1600
+
 # (title, category slug, year, file name on the old site under /attachments/)
 DOCUMENTS = [
     ("Statuten", "statuten", 2022, "Statuten_VRoboT.pdf"),
@@ -157,6 +167,15 @@ def download(url):
     request = urllib.request.Request(url, headers={"User-Agent": "vrobot-import"})
     with urllib.request.urlopen(request, timeout=60) as response:
         return response.read()
+
+
+def shrink_jpeg(data, max_width=POST_IMAGE_MAX_WIDTH):
+    """Scale a photo down to max_width (the original is 4032 px wide)."""
+    image = Image.open(io.BytesIO(data)).convert("RGB")
+    image.thumbnail((max_width, max_width * 10))
+    out = io.BytesIO()
+    image.save(out, "JPEG", quality=80, optimize=True, progressive=True)
+    return out.getvalue()
 
 
 class Command(BaseCommand):
@@ -208,9 +227,21 @@ class Command(BaseCommand):
             self.log("übersprungen", f"Beitrag «{POST['title']}» (existiert)")
             return
         post = Post(**POST, is_published=True)
+        if not self.dry_run:
+            image = self.fetch(POST_IMAGE["url"])
+            post.image.save(
+                POST_IMAGE["filename"], ContentFile(shrink_jpeg(image)), save=False
+            )
+            post.image_alt = POST_IMAGE["alt"]
         post.full_clean()
         post.save()
         self.log("importiert", f"Beitrag «{post.title}»")
+
+    def fetch(self, url):
+        try:
+            return download(url)
+        except OSError as exc:
+            raise CommandError(f"Download fehlgeschlagen: {url} ({exc})") from exc
 
     def import_documents(self):
         for title, category_slug, year, filename in DOCUMENTS:
@@ -223,10 +254,7 @@ class Command(BaseCommand):
                 # Files are not covered by the transaction rollback.
                 self.log("importiert", f"Dokument «{title}» (Probelauf, {url})")
                 continue
-            try:
-                data = download(url)
-            except OSError as exc:
-                raise CommandError(f"Download fehlgeschlagen: {url} ({exc})") from exc
+            data = self.fetch(url)
             document = Document(title=title, category=category, year=year)
             document.file.save(filename, ContentFile(data), save=False)
             document.full_clean()

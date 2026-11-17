@@ -1,0 +1,10 @@
+{% load static %}
+{# Decorative title image (core/static/core/img/banners/<name>-{800,1600}.jpg, from the old site). Expects `name`. #}
+{% with base="core/img/banners/"|add:name %}
+  <div class="page-banner page-banner-{{ name }}">
+    <img src="{% static base|add:'-800.jpg' %}"
+         srcset="{% static base|add:'-800.jpg' %} 800w, {% static base|add:'-1600.jpg' %} 1600w"
+         sizes="(max-width: 68rem) 100vw, 68rem"
+         width="1600" height="900" alt="">
+  </div>
+{% endwith %}

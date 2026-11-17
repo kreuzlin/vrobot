@@ -56,6 +56,25 @@ class PageViewTests(TestCase):
         self.assertContains(response, 'href="/kontakt/"', count=2)
 
 
+class BannerTests(TestCase):
+    """Fixed pages and the agenda show the title image from the old site."""
+
+    def test_pages_show_their_banner(self):
+        for url_name, name in [
+            ("pages:about", "ueber-uns"),
+            ("pages:join", "mitmachen"),
+            ("pages:contact", "kontakt"),
+            ("events:list", "agenda"),
+        ]:
+            with self.subTest(url_name=url_name):
+                response = self.client.get(reverse(url_name))
+                self.assertContains(response, f"core/img/banners/{name}-800.jpg")
+                for width in (800, 1600):
+                    self.assertIsNotNone(
+                        finders.find(f"core/img/banners/{name}-{width}.jpg")
+                    )
+
+
 class JoinPageTests(TestCase):
     def setUp(self):
         Page.objects.filter(slug="mitmachen").update(body="Werde **Mitglied**!")
