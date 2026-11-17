@@ -83,6 +83,10 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 - Templates extend `base.html`. New sections get a main navigation entry in
   `core/navigation.py`.
 - Styles live in `core/static/core/css/site.css` (plain CSS, no framework).
+- Rich text fields are Markdown: admin widget `core.widgets.MarkdownEditor`,
+  output only via the `|markdown` filter. Never render user content with
+  `|safe`.
+- Images always have an alt text field; it is required when an image is set.
 - Uploaded files (images, PDFs) live under `MEDIA_ROOT` on a Docker volume;
   static files are collected during the image build.
 - Time logic (e.g. "past events") uses `django.utils.timezone.now()`, never

@@ -6,5 +6,6 @@ Each feature app adds its entry here once its URLs exist. Entries are
 
 MAIN_NAVIGATION = [
     ("Start", "core:home"),
+    ("Beiträge", "posts:list"),
     ("Agenda", "events:list"),
 ]

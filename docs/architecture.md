@@ -42,6 +42,16 @@ The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
 - `navigation.py`: main navigation entries; `context_processors.site` resolves
   them and marks the current page
 - German `404.html`; standalone `500.html` without template logic
+- `markdown.py`: `render_markdown()` (Markdown → HTML, sanitised with `nh3`
+  allowlist; `# ` headings become `<h2>`), template filter `|markdown`
+- `widgets.py`: `MarkdownEditor` admin widget using EasyMDE, vendored under
+  `core/static/core/vendor/easymde/` (v2.21.0, MIT) with German text buttons,
+  so the admin loads no external resources
+
+### Media files
+
+Uploads go to `MEDIA_ROOT` (`media/` locally, a volume in production). In
+development Django serves them (`DEBUG` only); in production Caddy does.
 
 ## Configuration
 

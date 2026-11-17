@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # Project apps
     "core",
     "events",
+    "posts",
 ]
 
 MIDDLEWARE = [

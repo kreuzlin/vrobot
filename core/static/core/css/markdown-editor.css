@@ -1,0 +1,19 @@
+/* Admin: EasyMDE toolbar with text buttons. */
+
+.editor-toolbar button.md-btn {
+  width: auto;
+  padding: 0 0.6rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.EasyMDEContainer {
+  /* Admin form rows are narrow by default; give the editor full width. */
+  width: 100%;
+  max-width: 60rem;
+}
+
+.EasyMDEContainer .editor-preview h2,
+.EasyMDEContainer .editor-preview h3 {
+  margin-top: 1em;
+}

@@ -6,7 +6,17 @@
     <p class="lead">{{ site_description }}</p>
   </section>
 
-  {# Latest posts are added with the posts app. #}
+  {% if latest_posts %}
+    <section class="home-posts">
+      <h2>Neueste Beiträge</h2>
+      <div class="post-grid">
+        {% for post in latest_posts %}
+          {% include "posts/_post_card.html" %}
+        {% endfor %}
+      </div>
+      <p><a href="{% url 'posts:list' %}">Alle Beiträge</a></p>
+    </section>
+  {% endif %}
 
   <section class="home-events">
     <h2>Nächste Termine</h2>
