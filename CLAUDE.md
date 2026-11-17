@@ -54,7 +54,9 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
   - `main` is protected by a ruleset that only allows **squash merges**. The
     PR title becomes the commit message on `main`, so write it as a good
     commit subject (English, imperative, e.g. "Add events calendar").
-  - Once CI exists, a PR is only ready when CI is green.
+  - The ruleset also requires the CI checks "Lint and test" and
+    "Build image (linux/amd64)" to pass before a PR can be merged. If a job
+    is renamed in `.github/workflows/ci.yml`, update the ruleset as well.
 - **Small steps.** Commit after every working step (tests green, Ruff clean).
   Keep PRs small – one step of the plan per PR.
 - Before committing: `uv run ruff check . && uv run ruff format --check .` and

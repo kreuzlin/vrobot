@@ -97,8 +97,12 @@ development Django serves them (`DEBUG` only); in production Caddy does.
 
 ## Build and deployment
 
-1. Merge to `main` → GitHub Actions: Ruff, tests, then build the Docker image
-   for `linux/amd64` and push it to the GitHub Container Registry (GHCR).
+1. GitHub Actions (`.github/workflows/ci.yml`):
+   - every pull request and push to `main`: Ruff (lint + format), `manage.py
+     check`, `makemigrations --check`, tests against PostgreSQL 18, then a
+     `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
+   - push to `main` (i.e. after a merge): the image is pushed to GHCR as
+     `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`.
 2. On the server: `docker compose pull && docker compose up -d`, then
    `migrate` (details to follow once deployment is set up).
 
