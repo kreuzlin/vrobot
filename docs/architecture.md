@@ -48,6 +48,18 @@ The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
   `core/static/core/vendor/easymde/` (v2.21.0, MIT) with German text buttons,
   so the admin loads no external resources
 
+### `contact`
+
+`/kontakt/` combines the "Kontakt" page (`pages.views.PageMixin`) with the
+contact form. Spam protection: honeypot + signed timing token (ADR 0011).
+Messages are saved, then emailed; failures are logged and visible in the
+admin (`email_sent`).
+
+### Logging
+
+Logs go to stdout (collected by Docker). `django.request` logs only errors;
+access logs come from Caddy.
+
 ### Media files
 
 Uploads go to `MEDIA_ROOT` (`media/` locally, a volume in production). In
@@ -93,6 +105,11 @@ image is only built in CI.
 - **Cutover:** the old Hostpoint site stays live until the new site has been
   accepted on `www2.vrobot.ch`. Then switch DNS, redirect old URLs where
   useful, and let `www2` redirect to the main domain (or remove it).
+
+## Scheduled jobs (production)
+
+- daily: `python manage.py delete_old_contact_messages`
+- nightly: `pg_dump` before the UpCloud backup (ADR 0008)
 
 ## Open questions
 

@@ -6,15 +6,14 @@ from core.seo import SeoMixin
 from .models import Page
 
 
-class PageView(SeoMixin, TemplateView):
-    """Renders the fixed page identified by `page_slug`."""
+class PageMixin(SeoMixin):
+    """Loads the fixed page `page_slug` and uses its title and description."""
 
     page_slug = None
-    template_name = "pages/page.html"
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.page = get_object_or_404(Page, slug=self.page_slug)
-        return super().get(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_page_title(self):
         return self.page.title
@@ -26,3 +25,7 @@ class PageView(SeoMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["page"] = self.page
         return context
+
+
+class PageView(PageMixin, TemplateView):
+    template_name = "pages/page.html"

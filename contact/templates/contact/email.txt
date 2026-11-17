@@ -1,0 +1,11 @@
+{% autoescape off %}Neue Nachricht über das Kontaktformular auf vrobot.ch
+
+Name:   {{ msg.name }}
+E-Mail: {{ msg.email }}
+Datum:  {{ msg.created_at|date:"j. F Y, H:i" }}
+
+{{ msg.message }}
+
+--
+Mit «Antworten» geht die Antwort direkt an {{ msg.email }}.
+{% endautoescape %}

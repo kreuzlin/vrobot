@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "posts",
     "documents",
     "pages",
+    "contact",
 ]
 
 MIDDLEWARE = [
@@ -137,6 +138,26 @@ EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=True)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="webmaster@localhost")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Recipients of contact form messages (comma-separated in the environment).
+CONTACT_RECIPIENTS = env.list("CONTACT_RECIPIENTS", default=[])
+# Contact messages older than this are deleted by
+# `manage.py delete_old_contact_messages` (data protection).
+CONTACT_MESSAGE_RETENTION_DAYS = env.int("CONTACT_MESSAGE_RETENTION_DAYS", default=365)
+
+# --- Logging ------------------------------------------------------------
+
+# Log to stdout/stderr; Docker collects the output.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "root": {"handlers": ["console"], "level": "INFO"},
+    "loggers": {
+        # 404/403 are expected noise; access logs come from Caddy.
+        "django.request": {"level": "ERROR"},
+    },
+}
 
 # --- Security (production) ------------------------------------------------
 
