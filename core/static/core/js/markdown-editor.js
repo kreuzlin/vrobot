@@ -31,7 +31,12 @@
         button("quote", "Zitat", EasyMDE.toggleBlockquote),
         button("link", "Link", EasyMDE.drawLink),
         "|",
-        button("preview", "Vorschau", EasyMDE.togglePreview),
+        // noDisable: keep this button active in preview mode, otherwise there
+        // is no way back to editing.
+        Object.assign(button("preview", "Vorschau", EasyMDE.togglePreview), {
+          noDisable: true,
+          title: "Vorschau ein/aus",
+        }),
       ],
       promptURLs: true,
       promptTexts: { link: "Adresse des Links (https://…):" },
