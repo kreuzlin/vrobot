@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Dokumente</h1>
+  {% if categories %}
+    {% for category in categories %}
+      <section class="document-category" id="{{ category.slug }}">
+        <h2>{{ category.name }}</h2>
+        <ul class="document-list">
+          {% for document in category.documents.all %}
+            <li class="document">
+              <a href="{{ document.file.url }}">{{ document.title }}</a>
+              <span class="document-meta">{{ document.year }} · {{ document.extension }}{% if document.file_size %}, {{ document.file_size|filesizeformat }}{% endif %}</span>
+              {% if document.description %}<p>{{ document.description }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  {% else %}
+    <p>Zurzeit sind keine Dokumente verfügbar.</p>
+  {% endif %}
+{% endblock %}

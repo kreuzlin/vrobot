@@ -53,14 +53,20 @@ Shown on `/agenda/` (all upcoming) and on the home page (next three).
 |---------------|---------------------------------|---------------------------------------------|
 | `title`       | CharField                       | required                                    |
 | `category`    | ForeignKey → `DocumentCategory` | e.g. statutes, forms, annual reports        |
-| `year`        | PositiveSmallIntegerField       | required                                    |
-| `file`        | FileField                       | mainly PDF                                  |
+| `year`        | PositiveSmallIntegerField       | default: current year, 1990–2100            |
+| `file`        | FileField                       | pdf, docx, xlsx, odt, ods; max. 20 MB; stored under `media/documents/<year>/` |
 | `description` | TextField, optional             |                                             |
 
 `DocumentCategory`: `name`, `slug`, `order`. A separate model so the board
-can add categories themselves.
+can add categories themselves. The initial categories Statuten, Formulare and
+Jahresberichte are created by a data migration. A category that still has
+documents cannot be deleted (`PROTECT`).
 
-Display: grouped by category, within each category by year descending.
+Display on `/dokumente/`: grouped by category (empty categories hidden),
+within each category by year descending, with file type and size.
+
+Note: deleting a document or replacing its file does not delete the old file
+from disk (Django default). Acceptable for v1; clean up manually if needed.
 
 ## Static page – `pages.Page`
 

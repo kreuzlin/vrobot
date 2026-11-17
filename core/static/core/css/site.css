@@ -295,3 +295,34 @@ main {
   justify-content: center;
   margin-top: 2rem;
 }
+
+/* Documents */
+
+.document-category {
+  margin-bottom: 2rem;
+}
+
+.document-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.document {
+  padding-block: 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.document a {
+  font-weight: 600;
+}
+
+.document-meta {
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.document p {
+  margin: 0.25rem 0 0;
+}
