@@ -8,4 +8,5 @@ MAIN_NAVIGATION = [
     ("Start", "core:home"),
     ("Beiträge", "posts:list"),
     ("Agenda", "events:list"),
+    ("Dokumente", "documents:list"),
 ]

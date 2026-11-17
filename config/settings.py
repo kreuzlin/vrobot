@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "core",
     "events",
     "posts",
+    "documents",
 ]
 
 MIDDLEWARE = [
