@@ -35,6 +35,7 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 | Conversation with the maintainer                            | German   |
 | Website content, templates (user-facing text), admin labels, form and error messages | German (Swiss spelling: «ss», never «ß») |
 | Documentation (README, CLAUDE.md, docs/, ADRs)              | English  |
+| Exception: `docs/editor-guide.md` (for association members) | German   |
 | Code: identifiers, comments, docstrings, commit messages    | English  |
 
 - `LANGUAGE_CODE = "de-ch"`, `TIME_ZONE = "Europe/Zurich"`, `USE_TZ = True`.
@@ -87,6 +88,10 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
   output only via the `|markdown` filter. Never render user content with
   `|safe`.
 - Images always have an alt text field; it is required when an image is set.
+- Editors are staff users in the group "Redaktion" (never superusers). Its
+  permissions are defined in `core/editor_group.py`; a new content model needs
+  an entry there plus a data migration calling `sync_editor_group`.
+- Admin changes that affect editors are reflected in `docs/editor-guide.md`.
 - Uploaded files (images, PDFs) live under `MEDIA_ROOT` on a Docker volume;
   static files are collected during the image build.
 - Time logic (e.g. "past events") uses `django.utils.timezone.now()`, never

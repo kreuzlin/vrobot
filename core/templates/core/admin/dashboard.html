@@ -1,0 +1,17 @@
+<div class="module vrobot-dashboard">
+  <h2>Schnellzugriff</h2>
+  <div class="vrobot-dashboard-body">
+    {% if unsent_count %}
+      <p class="errornote">
+        {{ unsent_count }} Kontaktanfrage{{ unsent_count|pluralize:"n" }} konnte{{ unsent_count|pluralize:"n" }} nicht per E-Mail weitergeleitet werden.
+        <a href="{{ unsent_url }}">Jetzt ansehen</a>
+      </p>
+    {% endif %}
+    <p class="vrobot-quick-links">
+      {% for link in links %}
+        <a class="button" href="{{ link.url }}">{{ link.label }}</a>
+      {% endfor %}
+      <a class="button" href="/" target="_blank" rel="noopener">Website ansehen</a>
+    </p>
+  </div>
+</div>

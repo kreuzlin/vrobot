@@ -48,6 +48,18 @@ The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
   `core/static/core/vendor/easymde/` (v2.21.0, MIT) with German text buttons,
   so the admin loads no external resources
 
+### Admin
+
+- Editors: staff users in the group "Redaktion" (`core/editor_group.py`,
+  created by migration `core.0001_editor_group`): manage posts, events,
+  documents and categories; edit pages; read/delete contact messages; no
+  access to users and permissions.
+- Start page (`core/templates/admin/index.html`): quick links based on the
+  user's permissions, warning for contact messages that were not emailed.
+  `core` is listed before `django.contrib.admin` so its template wins.
+- Password reset from the login page (Django auth views, emails via SMTP).
+- Guide for editors (German): `docs/editor-guide.md`.
+
 ### `contact`
 
 `/kontakt/` combines the "Kontakt" page (`pages.views.PageMixin`) with the
