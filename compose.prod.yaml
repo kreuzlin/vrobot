@@ -42,7 +42,6 @@ services:
       - "443:443/udp"
     environment:
       SITE_ADDRESS: ${SITE_ADDRESS}
-      ACME_EMAIL: ${ACME_EMAIL}
       ROBOTS_TAG: ${ROBOTS_TAG:-noindex, nofollow}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro

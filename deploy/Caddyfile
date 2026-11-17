@@ -1,9 +1,7 @@
 # Caddy configuration for production (ADR 0005). Values come from .env via
 # compose.prod.yaml. Caddy obtains and renews the TLS certificate itself and
-# redirects HTTP to HTTPS.
-{
-	email {$ACME_EMAIL}
-}
+# redirects HTTP to HTTPS. No ACME account email: Let's Encrypt no longer
+# sends expiry notices, and Caddy renews automatically.
 
 {$SITE_ADDRESS} {
 	# Server-specific snippets, e.g. Basic Auth during the test phase
