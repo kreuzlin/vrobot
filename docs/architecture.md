@@ -32,7 +32,9 @@ Volumes: `postgres_data`, `media`, `static`, `caddy_data` (certificates).
 | `pages`     | Static pages (About us, Get involved)                 |
 | `contact`   | Contact form with spam protection, email via Hostpoint SMTP |
 
-The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
+The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`). The
+old site hosted its own copy under `/python/public/`; we link the official
+instance instead (maintainer decision), and the old path will redirect there.
 
 ### `core` in detail
 
@@ -160,8 +162,31 @@ image is only built in CI.
 
 Crontab: see [`deployment.md`](deployment.md).
 
+## Content migration from the old site
+
+`python manage.py import_old_site` (one-time, idempotent) takes over the
+content of the old PHP site: texts of "Über uns", "Mitmachen" and "Kontakt"
+(spelling fixes only), the single post (2020) and the documents (statutes,
+membership form, annual reports), downloaded from `vrobot.ch/attachments/`.
+Pages are only overwritten while they still hold the placeholder text
+(`--force` overrides); `--dry-run` saves nothing.
+
+The six topics of "Mitmachen" with their images are fixed in the template
+(maintainer decision): `pages/topics.py`, images in
+`pages/static/pages/img/topics/` (700×400 JPEG, from the old site). The
+editable page text is shown above them (`pages.views.JoinView`).
+
+The old site's header photos are fixed design images too:
+`core/static/core/img/banners/` – the home page photo (`home-*.jpg`, 3:2) and a
+decorative title image per fixed page and the agenda (`<slug>-{800,1600}.jpg`,
+16:9, cropped to 3:1 by CSS; `core/_banner.html`). The post "Die Welt braucht
+Arduino" gets its old header photo as post image (scaled to 1600 px).
+
+Not migrated (maintainer decisions): the self-hosted GearsBot copy (official
+instance is linked), the Twitter link, the outdated orange payment slip
+(`EZS_VRoboT.jpg`, invalid since 2022). The old agenda was empty.
+
 ## Open questions
 
 - HSTS: not sent during the test phase; enable in Caddy at go-live (HTTP→HTTPS
   redirects are done by Caddy automatically)
-- Which content to migrate from the old site

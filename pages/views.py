@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from core.seo import SeoMixin
 
 from .models import Page
+from .topics import TOPICS
 
 
 class PageMixin(SeoMixin):
@@ -29,3 +30,15 @@ class PageMixin(SeoMixin):
 
 class PageView(PageMixin, TemplateView):
     template_name = "pages/page.html"
+
+
+class JoinView(PageView):
+    """ "Mitmachen": page text plus the fixed topics with images."""
+
+    page_slug = "mitmachen"
+    template_name = "pages/join.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["topics"] = TOPICS
+        return context

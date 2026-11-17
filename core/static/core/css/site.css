@@ -374,14 +374,18 @@ h2 {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 20rem) 1fr;
+  grid-template-columns: minmax(0, 32rem) 1fr;
   align-items: center;
   gap: 2rem 3.5rem;
   padding-block: 1rem 2rem;
 }
 
-.hero-logo {
+.hero-photo {
+  display: block;
   width: 100%;
+  border-radius: var(--radius);
+  /* Red tab in the corner, echoing the logo. */
+  box-shadow: -0.6rem 0.6rem 0 var(--red);
 }
 
 .hero h1 {
@@ -407,9 +411,8 @@ h2 {
     text-align: center;
   }
 
-  .hero-logo {
-    max-width: 11rem;
-    margin: 0 auto;
+  .hero-photo {
+    box-shadow: -0.4rem 0.4rem 0 var(--red);
   }
 
   .lead {
@@ -603,6 +606,70 @@ h2 {
 
 .page {
   max-width: 44rem;
+}
+
+/* Decorative title image of the fixed pages and the agenda (core/_banner.html). */
+.page-banner img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+/* Keep the Bee-Bot's face in the crop. */
+.page-banner-ueber-uns img {
+  object-position: 50% 80%;
+}
+
+.page-banner + .page h1,
+.page-banner + h1 {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 44rem) {
+  .page-banner img {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+/* "Mitmachen": fixed topics with images (pages/topics.py). */
+.section-lead {
+  margin-top: -0.5rem;
+  color: var(--text-muted);
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.5rem;
+}
+
+.topic {
+  background: var(--bg);
+  border: 1px solid var(--grey-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.topic img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 7 / 4;
+  object-fit: cover;
+}
+
+.topic-body {
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+.topic h3 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.topic p {
+  margin: 0;
 }
 
 /* --- Documents -------------------------------------------------------- */

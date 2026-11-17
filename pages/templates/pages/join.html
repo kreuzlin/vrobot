@@ -1,0 +1,22 @@
+{% extends "pages/page.html" %}
+{% load static %}
+
+{% block content %}
+  {{ block.super }}
+  {# Fixed topics with images (pages/topics.py); the text above is edited in the admin. #}
+  <section class="section">
+    <h2 class="section-title">Unsere Themen</h2>
+    <p class="section-lead">Spielerisch lernen …</p>
+    <div class="topic-grid">
+      {% for topic in topics %}
+        <article class="topic">
+          <img src="{% static 'pages/img/topics/'|add:topic.image %}" alt="{{ topic.alt }}" width="700" height="400" loading="lazy">
+          <div class="topic-body">
+            <h3>{{ topic.title }}</h3>
+            <p>{{ topic.text }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
