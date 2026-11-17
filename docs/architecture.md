@@ -72,6 +72,21 @@ admin (`email_sent`).
 Logs go to stdout (collected by Docker). `django.request` logs only errors;
 access logs come from Caddy.
 
+### Design
+
+- Colours from the logo (see `site.css` header and CLAUDE.md), system font
+  stack (no web fonts, no external requests).
+- Header: logo symbol + "VRoboT / Verein Robotik Talente"; the logo links to
+  the home page (no "Start" menu entry). Below 52rem the navigation collapses
+  behind a "Menü" button (`core/static/core/js/site.js`); without JavaScript
+  it stays visible.
+- Recurring elements taken from the logo: red slanted tab before section
+  titles, grey "circuit line" with red end above the footer.
+- Logo: only a raster source exists (`design/vrobot_logo.png`, no SVG).
+  `scripts/build_logo_assets.py` derives cropped, transparent, palette-reduced
+  PNGs (full logo 480/960 px, symbol for the header) and favicons.
+  `design/` and `scripts/` are excluded from the Docker image.
+
 ### Media files
 
 Uploads go to `MEDIA_ROOT` (`media/` locally, a volume in production). In

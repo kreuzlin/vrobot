@@ -1,9 +1,9 @@
-{# Teaser for lists. Expects `post`. #}
+{# Teaser for lists. Expects `post`. The whole card is clickable via the title link. #}
 <article class="post-card">
   {% if post.image %}
-    <a href="{{ post.get_absolute_url }}" tabindex="-1" aria-hidden="true">
-      <img src="{{ post.image.url }}" alt="" loading="lazy">
-    </a>
+    <img src="{{ post.image.url }}" alt="" loading="lazy">
+  {% else %}
+    <div class="post-card-noimage" aria-hidden="true"></div>
   {% endif %}
   <div class="post-card-body">
     <p class="post-meta"><time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j. F Y" }}</time></p>

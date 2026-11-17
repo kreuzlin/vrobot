@@ -1,5 +1,9 @@
 {# One event as a list item. Expects `event`; `compact` hides description and link. #}
 <li class="event">
+  <div class="event-badge" aria-hidden="true">
+    <span class="event-badge-day">{{ event.start|date:"j" }}</span>
+    <span class="event-badge-month">{{ event.start|date:"M" }}</span>
+  </div>
   <p class="event-date">
     <time datetime="{{ event.start|date:'c' }}">{{ event.start|date:"l, j. F Y" }}</time>,
     {{ event.start|date:"H:i" }}{% if event.end %}{% if event.ends_same_day %}–{{ event.end|date:"H:i" }}{% else %} bis <time datetime="{{ event.end|date:'c' }}">{{ event.end|date:"l, j. F Y, H:i" }}</time>{% endif %}{% endif %} Uhr
