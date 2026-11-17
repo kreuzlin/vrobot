@@ -326,3 +326,81 @@ main {
 .document p {
   margin: 0.25rem 0 0;
 }
+
+/* Messages */
+
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-accent);
+}
+
+.message-success {
+  border-left-color: #1f7a3d;
+  background: #eaf6ee;
+}
+
+/* Forms */
+
+.contact-form {
+  max-width: 36rem;
+  margin-top: 2rem;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.form-errors,
+.field-errors {
+  color: #b42318;
+}
+
+.form-errors ul,
+.field-errors ul {
+  margin: 0.25rem 0;
+  padding-left: 1.2rem;
+}
+
+.form-note {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+button.button {
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Honeypot field: hidden from humans, still in the DOM for bots. */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

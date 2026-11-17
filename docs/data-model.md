@@ -89,11 +89,17 @@ form (contact app).
 |--------------|---------------|-------|
 | `name`       | CharField     |       |
 | `email`      | EmailField    |       |
-| `message`    | TextField     |       |
+| `message`    | TextField     | max. 5000 characters (form) |
 | `created_at` | DateTimeField |       |
+| `email_sent` | BooleanField  | false if forwarding failed |
 
-Stored **and** forwarded by email to the association, so nothing is lost if
-email delivery fails. A retention period needs to be defined (data protection).
+Stored **and** forwarded by email to `CONTACT_RECIPIENTS` (From: our address,
+Reply-To: the sender; ADR 0010), so nothing is lost if email delivery fails.
+Read-only in the admin. Spam is discarded before saving (ADR 0011).
+
+Retention: `manage.py delete_old_contact_messages` deletes messages older than
+`CONTACT_MESSAGE_RETENTION_DAYS` (default 365); to be run daily via cron in
+production.
 
 ## Open questions
 

@@ -18,3 +18,4 @@ Template: [`0000-template.md`](0000-template.md)
 | 0008 | [Backups with UpCloud's backup service](0008-backups-with-upcloud.md) | accepted |
 | 0009 | [Markdown for rich text content](0009-markdown-for-content.md)        | accepted |
 | 0010 | [Send email via Hostpoint SMTP](0010-email-via-hostpoint-smtp.md)     | accepted |
+| 0011 | [Spam protection without third-party services](0011-spam-protection-without-third-parties.md) | accepted |

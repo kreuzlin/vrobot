@@ -1,0 +1,30 @@
+{% extends "pages/page.html" %}
+
+{% block page_extra %}
+  <section class="contact-form">
+    <h2>Nachricht senden</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors or form.token.errors %}
+        <div class="form-errors" role="alert">
+          {{ form.non_field_errors }}
+          {{ form.token.errors }}
+        </div>
+      {% endif %}
+      {{ form.token }}
+
+      {% for field in form %}
+        {% if field.name != "token" %}
+          <div class="form-field{% if field.name == 'website' %} hp-field{% endif %}"{% if field.name == "website" %} aria-hidden="true"{% endif %}>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="field-errors">{{ field.errors }}</div>{% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <p class="form-note">Wir verwenden deine Angaben nur, um deine Anfrage zu beantworten.</p>
+      <button type="submit" class="button">Senden</button>
+    </form>
+  </section>
+{% endblock %}

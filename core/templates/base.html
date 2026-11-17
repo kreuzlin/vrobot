@@ -38,6 +38,13 @@
   </header>
 
   <main id="main" class="container">
+    {% if messages %}
+      <div class="messages" role="status">
+        {% for message in messages %}
+          <p class="message message-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
     {% block content %}{% endblock %}
   </main>
 
