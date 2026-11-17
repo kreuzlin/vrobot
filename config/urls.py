@@ -14,6 +14,7 @@ urlpatterns = [
     path("agenda/", include("events.urls")),
     path("beitraege/", include("posts.urls")),
     path("dokumente/", include("documents.urls")),
+    path("", include("pages.urls")),
     path("", include("core.urls")),
 ]
 

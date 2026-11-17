@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "events",
     "posts",
     "documents",
+    "pages",
 ]
 
 MIDDLEWARE = [

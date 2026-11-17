@@ -74,11 +74,14 @@ from disk (Django default). Acceptable for v1; clean up manually if needed.
 |--------------------|-------------------|-----------------------------------------|
 | `title`            | CharField         |                                         |
 | `slug`             | SlugField, unique | `ueber-uns`, `mitmachen`, `kontakt`     |
-| `body`             | TextField         | Markdown (ADR 0009)                     |
+| `body`             | TextField         | Markdown (ADR 0009), may be empty       |
 | `meta_description` | CharField         |                                         |
 
-Pages are created by a data migration; structure and URLs are fixed, only the
-text is editable in the admin. The contact page additionally shows the form.
+Pages are created by a data migration with placeholder texts; structure and
+URLs (`/ueber-uns/`, `/mitmachen/`, `/kontakt/`) are fixed. In the admin,
+title, text and meta description are editable; pages cannot be added or
+deleted, and the slug is not editable. The contact page additionally shows the
+form (contact app).
 
 ## Contact message – `contact.ContactMessage`
 
