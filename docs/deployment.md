@@ -17,31 +17,55 @@ How the production server runs vrobot.ch. Architecture and rationale:
 As root on a fresh server:
 
 ```bash
-# Updates, firewall, automatic security updates
+# Updates, automatic security updates (enabled by default once installed)
 apt update && apt upgrade -y
-apt install -y ufw unattended-upgrades git
+apt install -y ufw unattended-upgrades git ca-certificates curl
+# reboot if /var/run/reboot-required exists
+
+# Swap as a safety net (the server has ~2 GB RAM)
+fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo "/swapfile none swap sw 0 0" >> /etc/fstab
+echo "vm.swappiness=10" > /etc/sysctl.d/99-swappiness.conf && sysctl -p /etc/sysctl.d/99-swappiness.conf
+
+# Firewall
 ufw allow OpenSSH && ufw allow 80/tcp && ufw allow 443/tcp && ufw allow 443/udp
 ufw enable
 
-# Admin user with SSH key login (copy the key from root first)
+# Admin user with SSH key login (copies root's authorized_keys).
+# No password, so sudo without password – the docker group is
+# root-equivalent anyway.
 adduser --disabled-password --gecos "" deploy
 usermod -aG sudo deploy
+echo "deploy ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/deploy && chmod 440 /etc/sudoers.d/deploy
 rsync --archive --chown=deploy:deploy ~/.ssh /home/deploy
 ```
 
 Docker publishes ports past `ufw`; only Caddy publishes ports (80/443), so
 this is fine – never publish the database or `web`.
 
-SSH hardening in `/etc/ssh/sshd_config.d/hardening.conf`, then
-`systemctl reload ssh` (test a second login before closing the session):
+SSH hardening: first check that `ssh deploy@<server>` and `sudo -n true`
+work in a second session. Then create
+`/etc/ssh/sshd_config.d/00-hardening.conf` (the `00-` prefix matters: sshd
+uses the first value it reads, and `50-cloud-init.conf` may enable
+passwords), run `sshd -t && systemctl reload ssh` and verify with `sshd -T`:
 
 ```
 PermitRootLogin no
 PasswordAuthentication no
+KbdInteractiveAuthentication no
 ```
 
-Install Docker Engine from Docker's apt repository (see docs.docker.com,
-"Install Docker Engine on Ubuntu"), then `usermod -aG docker deploy`.
+From now on log in as `deploy`. Install Docker Engine from Docker's apt
+repository (docs.docker.com, "Install Docker Engine on Ubuntu"), then
+`usermod -aG docker deploy` and limit container log size in
+`/etc/docker/daemon.json`, then `systemctl restart docker`:
+
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "10m", "max-file": "5"}
+}
+```
 
 ## 2. DNS
 
@@ -70,7 +94,6 @@ Edit `.env` for production:
 | `ALLOWED_HOSTS` | `www2.vrobot.ch` |
 | `CSRF_TRUSTED_ORIGINS` | `https://www2.vrobot.ch` |
 | `SITE_ADDRESS` | `www2.vrobot.ch` |
-| `ACME_EMAIL` | contact address for Let's Encrypt |
 | `ROBOTS_TAG` | `noindex, nofollow` (test phase) |
 | `POSTGRES_PASSWORD` | new random password, same in `DATABASE_URL` |
 | `EMAIL_*`, `DEFAULT_FROM_EMAIL` | Hostpoint mailbox (ADR 0010) |
