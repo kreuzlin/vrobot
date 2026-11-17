@@ -1,10 +1,12 @@
 """Tests for the fixed pages."""
 
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles import finders
 from django.test import TestCase
 from django.urls import reverse
 
 from pages.models import Page
+from pages.topics import TOPICS
 
 
 class InitialPagesTests(TestCase):
@@ -52,6 +54,26 @@ class PageViewTests(TestCase):
             response, '<a href="/kontakt/" aria-current="page">Kontakt</a>', html=True
         )
         self.assertContains(response, 'href="/kontakt/"', count=2)
+
+
+class JoinPageTests(TestCase):
+    def setUp(self):
+        Page.objects.filter(slug="mitmachen").update(body="Werde **Mitglied**!")
+        self.response = self.client.get(reverse("pages:join"))
+
+    def test_shows_editable_text_and_fixed_topics(self):
+        self.assertContains(self.response, "<strong>Mitglied</strong>", html=True)
+        self.assertContains(self.response, "Unsere Themen")
+        for topic in TOPICS:
+            with self.subTest(topic=topic["title"]):
+                self.assertContains(self.response, topic["title"])
+                self.assertContains(self.response, f'alt="{topic["alt"]}"')
+                self.assertContains(self.response, f"pages/img/topics/{topic['image']}")
+
+    def test_topic_images_exist(self):
+        for topic in TOPICS:
+            with self.subTest(image=topic["image"]):
+                self.assertIsNotNone(finders.find(f"pages/img/topics/{topic['image']}"))
 
 
 class PageAdminTests(TestCase):

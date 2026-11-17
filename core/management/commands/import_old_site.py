@@ -2,7 +2,8 @@
 
 Imports the texts of "Über uns", "Mitmachen" and "Kontakt", the only post and
 the downloadable documents (fetched from the old site). Texts are taken over
-from the old site with spelling fixes only.
+from the old site with spelling fixes only. The topics of "Mitmachen" with
+their images are fixed in the template (pages/topics.py), not imported.
 
 Safe to run more than once:
 - pages are only overwritten while they still contain the placeholder text
@@ -72,46 +73,6 @@ Statuten, Jahresberichte und das Beitrittsformular findest du unter \
 – Heraklit
 >
 > «Gebt Lehrern keine Chance. Verblüfft sie durch Wissen!» – unbekannt
-
-## Unsere Themen
-
-Spielerisch lernen …
-
-### Mindstorms, unser Zugpferd
-
-Unsere Talente spielen am liebsten Lego. Wer kann es ihnen verübeln? Im \
-Moment machen wir vor allem Projekte, die in 2 Stunden umgesetzt werden können.
-
-### Einstieg in Arduino
-
-Die Arduino-Plattform ist relativ günstig, aber sehr spannend und vielseitig. \
-Darum versuchen wir, diese Plattform immer wieder in unsere Projekte \
-einzubauen. Die Lernkurve ist aber vergleichsweise steil.
-
-### Elektronikbauteile
-
-Mit unseren Robotern kommen wir immer wieder in Kontakt mit \
-Elektronikbauteilen, wie z.\u00a0B. einem Ultraschallsensor oder einer LED. Unsere \
-Talente lernen die Eigenschaften und Bezeichnungen dieser Bauteile, weil sie \
-ihnen immer wieder begegnen.
-
-### Wie lerne ich Python?
-
-Python wird an den Hochschulen vermittelt und im Beruf eingesetzt. Wir \
-benutzen es als Beispiel für eine textbasierte Programmiersprache. Auch Lego \
-hat begonnen, auf Python zu setzen.
-
-### Programmieren mit Scratch
-
-Scratch ist der Klassiker, um Kindern den Einstieg ins Programmieren zu \
-ermöglichen. Es ist bei unseren Talenten sehr beliebt. Neu setzt jetzt auch \
-Lego auf Scratch und löst damit seine Eigenentwicklung ab.
-
-### Erzählen und Präsentieren
-
-Ideen teilen, voneinander lernen und dabei auch das Sprechen vor einer Gruppe \
-üben, sind wichtige Bestandteile unseres Vereins. Wir sind dankbar für jede \
-Anregung und Darbietung.
 
 ## Mitglied werden
 

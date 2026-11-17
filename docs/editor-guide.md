@@ -89,6 +89,11 @@ Unter **Seiten** kannst du Titel, Text und die «Beschreibung für
 Suchmaschinen» dieser drei Seiten ändern. Seiten können nicht gelöscht oder neu
 angelegt werden – ihre Adressen sind fest.
 
+Auf **Mitmachen** erscheinen unter deinem Text die sechs Themen mit Bild
+(Mindstorms, Arduino, Elektronik, Python, Scratch, Präsentieren). Diese sind
+fest eingebaut und lassen sich im Admin nicht ändern – für Änderungen bitte
+beim Webmaster melden.
+
 ## Kontaktanfragen
 
 Nachrichten aus dem Kontaktformular werden automatisch per E-Mail

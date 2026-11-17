@@ -171,6 +171,11 @@ membership form, annual reports), downloaded from `vrobot.ch/attachments/`.
 Pages are only overwritten while they still hold the placeholder text
 (`--force` overrides); `--dry-run` saves nothing.
 
+The six topics of "Mitmachen" with their images are fixed in the template
+(maintainer decision): `pages/topics.py`, images in
+`pages/static/pages/img/topics/` (700×400 JPEG, from the old site). The
+editable page text is shown above them (`pages.views.JoinView`).
+
 Not migrated (maintainer decisions): the self-hosted GearsBot copy (official
 instance is linked), the Twitter link, the outdated orange payment slip
 (`EZS_VRoboT.jpg`, invalid since 2022). The old agenda was empty.

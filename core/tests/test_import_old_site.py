@@ -38,7 +38,7 @@ class ImportOldSiteTests(TestCase):
         about = Page.objects.get(slug="ueber-uns")
         self.assertIn("Unsere Regeln", about.body)
         self.assertNotIn("Platzhalter", about.body)
-        self.assertIn("Mindstorms", Page.objects.get(slug="mitmachen").body)
+        self.assertIn("Heraklit", Page.objects.get(slug="mitmachen").body)
 
         post = Post.objects.get(slug="die-welt-braucht-arduino")
         self.assertTrue(post.is_visible())

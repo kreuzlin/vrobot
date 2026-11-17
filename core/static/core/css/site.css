@@ -605,6 +605,45 @@ h2 {
   max-width: 44rem;
 }
 
+/* "Mitmachen": fixed topics with images (pages/topics.py). */
+.section-lead {
+  margin-top: -0.5rem;
+  color: var(--text-muted);
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.5rem;
+}
+
+.topic {
+  background: var(--bg);
+  border: 1px solid var(--grey-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.topic img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 7 / 4;
+  object-fit: cover;
+}
+
+.topic-body {
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+.topic h3 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.topic p {
+  margin: 0;
+}
+
 /* --- Documents -------------------------------------------------------- */
 
 .document-category {
