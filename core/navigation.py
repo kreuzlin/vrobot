@@ -9,4 +9,7 @@ MAIN_NAVIGATION = [
     ("Beiträge", "posts:list"),
     ("Agenda", "events:list"),
     ("Dokumente", "documents:list"),
+    ("Über uns", "pages:about"),
+    ("Mitmachen", "pages:join"),
+    ("Kontakt", "pages:contact"),
 ]
