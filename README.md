@@ -66,3 +66,4 @@ directly (not `uv run`).
 - [`docs/architecture.md`](docs/architecture.md) – structure, deployment, operations
 - [`docs/data-model.md`](docs/data-model.md) – data model
 - [`docs/decisions/`](docs/decisions/) – Architecture Decision Records (ADRs)
+- [`docs/editor-guide.md`](docs/editor-guide.md) – guide for editors (German)

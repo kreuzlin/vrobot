@@ -169,6 +169,12 @@ class AdminTests(TestCase):
         self.assertContains(response, "core/vendor/easymde/easymde.min.js")
         self.assertContains(response, 'value="Erika Muster"')
 
+    def test_list_shows_thumbnail(self):
+        with self.settings(MEDIA_ROOT=TEMP_MEDIA):
+            make_post(image=make_image(), image_alt="Roboter")
+            response = self.client.get(reverse("admin:posts_post_changelist"))
+        self.assertContains(response, 'style="height:40px;width:64px')
+
     def test_image_input_is_linked_to_alt_text_field(self):
         response = self.client.get(reverse("admin:posts_post_add"))
         self.assertContains(response, 'data-alt-field="id_image_alt"')

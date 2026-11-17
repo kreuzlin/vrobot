@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db import models
+from django.utils.html import format_html
 
 from core.widgets import MarkdownEditor
 
@@ -10,7 +11,15 @@ from .models import Post
 class PostAdmin(admin.ModelAdmin):
     # The only TextField is `body`.
     formfield_overrides = {models.TextField: {"widget": MarkdownEditor}}
-    list_display = ["title", "author", "published_at", "is_published", "visible"]
+    list_display = [
+        "thumbnail",
+        "title",
+        "author",
+        "published_at",
+        "is_published",
+        "visible",
+    ]
+    list_display_links = ["thumbnail", "title"]
     list_filter = ["is_published"]
     search_fields = ["title", "body", "author"]
     date_hierarchy = "published_at"
@@ -37,6 +46,16 @@ class PostAdmin(admin.ModelAdmin):
             {"fields": ["slug", "meta_description"], "classes": ["collapse"]},
         ),
     ]
+
+    @admin.display(description="Bild")
+    def thumbnail(self, obj):
+        if not obj.image:
+            return ""
+        return format_html(
+            '<img src="{}" alt="" style="height:40px;width:64px;object-fit:cover;'
+            'border-radius:4px">',
+            obj.image.url,
+        )
 
     @admin.display(boolean=True, description="Auf der Website sichtbar")
     def visible(self, obj):
