@@ -136,8 +136,9 @@ SITE_SHORT_NAME = "VRoboT"
 SITE_TITLE = f"{SITE_SHORT_NAME} – {SITE_NAME}"
 # Default meta description for pages that do not set their own.
 SITE_DESCRIPTION = (
-    "Der Verein Robotik Talente (VRoboT) fördert Kinder und Jugendliche, "
-    "die sich für Robotik und Programmieren begeistern."
+    "Der Verein Robotik Talente (VRoboT) fördert seit 2017 Kinder und "
+    "Jugendliche in Robotik: konstruieren, programmieren, forschen und "
+    "präsentieren – im Team."
 )
 GEARSBOT_URL = env("GEARSBOT_URL", default="https://gears.aposteriori.com.sg/")
 
