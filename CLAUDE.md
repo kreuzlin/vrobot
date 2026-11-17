@@ -1,75 +1,78 @@
 # CLAUDE.md
 
-Leitfaden für die Arbeit an diesem Repository (vrobot.ch, Website des Vereins
-Robotik Talente). Gilt für Claude Code und für menschliche Mitwirkende.
+Guidelines for working on this repository (vrobot.ch, website of the
+Verein Robotik Talente). Applies to Claude Code and human contributors.
 
-## Projektkontext
+## Project context
 
-- Neubau der Vereinswebsite; die alte PHP-Seite auf Hostpoint bleibt live, bis
-  die neue fertig ist. Nichts an der alten Seite oder am DNS ändern.
-- Inhaltsseite mit wenig Interaktivität. Inhalte werden von Vereinsmitgliedern
-  über das Django-Admin gepflegt – das Admin muss für Laien verständlich sein
-  (deutsche `verbose_name`, Hilfetexte, sinnvolle Listen und Filter).
-- Umfang Version 1: siehe README.md. Keine Features darüber hinaus ohne Rückfrage.
+- Rebuild of the association's website. The old PHP site on Hostpoint stays
+  live until the new one is finished. Do not touch the old site or DNS.
+- Content site with little interactivity. Content is maintained by association
+  members through the Django admin – the admin must be understandable for
+  non-technical users (German `verbose_name`s, help texts, sensible list views
+  and filters).
+- Scope of version 1: see README.md. No features beyond that without asking.
 
-## Stack (verbindlich)
+## Stack (binding)
 
-- Django 5.2 LTS mit Django-Templates. Kein React/SPA, kein Build-Schritt für
-  Frontend, solange nicht nötig.
-- Python-Abhängigkeiten ausschliesslich mit **uv** (`pyproject.toml`, `uv.lock`).
-  Kein `pip install`, kein `requirements.txt`.
-- **Ruff** für Linting und Formatierung.
-- **PostgreSQL** – auch lokal, kein SQLite.
-- **Docker Compose** für Entwicklung und Betrieb.
-- Produktion: UpCloud, Ubuntu 26.04 LTS, Caddy (automatisches HTTPS).
-- Images baut GitHub Actions für `linux/amd64` (Entwicklung auf Apple Silicon,
-  Server ist x86).
+- Django 5.2 LTS with Django templates. No React/SPA, no frontend build step
+  unless it becomes necessary.
+- Python dependencies only via **uv** (`pyproject.toml`, `uv.lock`).
+  No `pip install`, no `requirements.txt`.
+- **Ruff** for linting and formatting.
+- **PostgreSQL** – also locally, no SQLite.
+- **Docker Compose** for development and production.
+- Production: UpCloud, Ubuntu 26.04 LTS, Caddy (automatic HTTPS).
+- GitHub Actions builds images for `linux/amd64` (development happens on
+  Apple Silicon, the server is x86).
 
-Begründungen stehen in `docs/decisions/`. Wer davon abweichen will, schreibt
-zuerst einen neuen ADR.
+Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 
-## Sprache
+## Language
 
-- Website-Inhalte, Templates, Admin-Beschriftungen, Doku: **Deutsch** (Schweizer
-  Schreibweise, also «ss» statt «ß»).
-- Code (Bezeichner, Modell- und Feldnamen), Commit-Messages: Englisch.
+| What                                                        | Language |
+|-------------------------------------------------------------|----------|
+| Conversation with the maintainer                            | German   |
+| Website content, templates (user-facing text), admin labels, form and error messages | German (Swiss spelling: «ss», never «ß») |
+| Documentation (README, CLAUDE.md, docs/, ADRs)              | English  |
+| Code: identifiers, comments, docstrings, commit messages    | English  |
+
 - `LANGUAGE_CODE = "de-ch"`, `TIME_ZONE = "Europe/Zurich"`, `USE_TZ = True`.
 
-## Arbeitsweise
+## Workflow
 
-- **Kleine Schritte.** Nach jedem funktionierenden Schritt committen
-  (Tests grün, Ruff sauber).
-- Vor einem Commit: `uv run ruff check . && uv run ruff format --check . && uv run python manage.py test`.
-- Für die wichtigsten Funktionen gibt es Tests (z. B. Agenda blendet vergangene
-  Termine aus, Kontaktformular inkl. Spamschutz, Sichtbarkeit von Beiträgen,
-  Seitentitel/Meta-Descriptions).
-- Doku mitführen: Datenmodell-Änderungen → `docs/data-model.md`, Architektur-
-  oder Betriebsänderungen → `docs/architecture.md`, grundlegende Entscheidungen
-  → neuer ADR in `docs/decisions/`.
+- **Small steps.** Commit after every working step (tests green, Ruff clean).
+- Before committing: `uv run ruff check . && uv run ruff format --check . && uv run python manage.py test`.
+- Tests cover the most important behaviour (e.g. events calendar hides past
+  events, contact form incl. spam protection, post visibility, page titles and
+  meta descriptions).
+- Keep docs in sync: model changes → `docs/data-model.md`, architecture or
+  operations changes → `docs/architecture.md`, fundamental decisions → new ADR
+  in `docs/decisions/`.
 
 ## Secrets
 
-- Secrets nur in `.env` (nie committen). Im Repo liegt nur `.env.example` mit
-  Platzhaltern und Kommentaren.
-- Neue Umgebungsvariablen immer gleichzeitig in `.env.example` dokumentieren.
-- Keine Passwörter, Tokens oder Kundendaten in Code, Tests, Fixtures oder Doku.
+- Secrets only in `.env` (never committed). The repo contains only
+  `.env.example` with placeholders and comments.
+- Every new environment variable is documented in `.env.example` at the same time.
+- No passwords, tokens or personal data in code, tests, fixtures or docs.
 
-## Konventionen
+## Conventions
 
-- Django-Apps klein und thematisch (z. B. `posts`, `events`, `documents`,
+- Small, topic-focused Django apps (e.g. `posts`, `events`, `documents`,
   `pages`, `contact`).
-- Jede öffentliche Seite setzt `<title>` und `<meta name="description">` über
-  einen gemeinsamen Mechanismus im Basis-Template.
-- Hochgeladene Dateien (Bilder, PDFs) liegen unter `MEDIA_ROOT` auf einem
-  Docker-Volume; statische Dateien werden beim Image-Build gesammelt.
-- Zeitlogik (z. B. «vergangene Termine») über `django.utils.timezone.now()`,
-  nie über naive Datetimes.
+- Every public page sets `<title>` and `<meta name="description">` through a
+  shared mechanism in the base template.
+- Uploaded files (images, PDFs) live under `MEDIA_ROOT` on a Docker volume;
+  static files are collected during the image build.
+- Time logic (e.g. "past events") uses `django.utils.timezone.now()`, never
+  naive datetimes.
 
-## Nützliche Befehle
+## Useful commands
 
 ```bash
 docker compose up --build
-docker compose exec web uv run python manage.py <befehl>
+docker compose exec web uv run python manage.py <command>
 uv run ruff check . --fix
 uv run ruff format .
 uv run python manage.py test

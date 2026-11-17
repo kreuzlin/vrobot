@@ -1,21 +1,20 @@
-# 0003: PostgreSQL als Datenbank
+# 0003: PostgreSQL as database
 
-- Status: angenommen
-- Datum: 2026-11-17
+- Status: accepted
+- Date: 2026-11-17
 
-## Kontext
+## Context
 
-Die Datenmenge ist klein. SQLite wäre technisch ausreichend, aber Betrieb in
-Containern, Backups und spätere Erweiterungen sprechen für einen echten
-Datenbankserver.
+The data volume is small. SQLite would technically suffice, but running in
+containers, backups and future extensions favour a real database server.
 
-## Entscheidung
+## Decision
 
-PostgreSQL (aktuelle stabile Hauptversion, offizielles Docker-Image),
-in Entwicklung **und** Produktion. Kein SQLite, auch nicht für Tests.
+PostgreSQL (current stable major version, official Docker image) in
+development **and** production. No SQLite, not even for tests.
 
-## Konsequenzen
+## Consequences
 
-- Gleiches Verhalten lokal und auf dem Server.
-- Backups per `pg_dump`.
-- Ein zusätzlicher Container und ein Volume, das gesichert werden muss.
+- Same behaviour locally and on the server.
+- Backups via `pg_dump`.
+- One extra container and a volume that must be backed up.

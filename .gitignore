@@ -24,7 +24,7 @@ htmlcov/
 .vscode/
 *.swp
 
-# Docker / lokale Daten
+# Docker / local data
 docker-compose.override.yml
 /data/
 /backups/

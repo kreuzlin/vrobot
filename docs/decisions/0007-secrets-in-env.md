@@ -1,23 +1,22 @@
-# 0007: Secrets nur in .env
+# 0007: Secrets only in .env
 
-- Status: angenommen
-- Datum: 2026-11-17
+- Status: accepted
+- Date: 2026-11-17
 
-## Kontext
+## Context
 
-Das Repository kann öffentlich werden oder mit weiteren Personen geteilt
-werden. Zugangsdaten (Django `SECRET_KEY`, Datenbank, SMTP) dürfen nie darin
-landen.
+The repository may become public or be shared with more people. Credentials
+(Django `SECRET_KEY`, database, SMTP) must never end up in it.
 
-## Entscheidung
+## Decision
 
-- Secrets und umgebungsabhängige Werte ausschliesslich in `.env`
-  (in `.gitignore`), eingelesen über Docker Compose und Umgebungsvariablen.
-- Im Repo liegt nur `.env.example` mit Platzhaltern und Erklärungen.
-- In GitHub Actions werden nötige Werte als Repository-Secrets hinterlegt.
+- Secrets and environment-specific values live only in `.env`
+  (listed in `.gitignore`), loaded via Docker Compose and environment variables.
+- The repo contains only `.env.example` with placeholders and explanations.
+- Values needed in GitHub Actions are stored as repository secrets.
 
-## Konsequenzen
+## Consequences
 
-- Jede neue Variable muss in `.env.example` nachgeführt werden.
-- Die produktive `.env` existiert nur auf dem Server und muss separat
-  gesichert werden (z. B. im Passwortmanager des Vereins).
+- Every new variable must be added to `.env.example`.
+- The production `.env` exists only on the server and must be backed up
+  separately (e.g. in the association's password manager).

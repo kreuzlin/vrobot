@@ -1,17 +1,17 @@
 # Architecture Decision Records
 
-Grundlegende Entscheidungen, je eine Datei, fortlaufend nummeriert.
-Ein ADR wird nicht nachträglich umgeschrieben; eine geänderte Entscheidung
-bekommt einen neuen ADR, der den alten als «ersetzt durch» markiert.
+Fundamental decisions, one file each, numbered sequentially.
+An ADR is not rewritten after the fact; a changed decision gets a new ADR that
+marks the old one as "superseded by".
 
-Vorlage: [`0000-template.md`](0000-template.md)
+Template: [`0000-template.md`](0000-template.md)
 
-| Nr.  | Titel                                                  | Status      |
-|------|--------------------------------------------------------|-------------|
-| 0001 | [ADRs verwenden](0001-adrs-verwenden.md)               | angenommen  |
-| 0002 | [Django mit Server-Templates](0002-django-mit-templates.md) | angenommen |
-| 0003 | [PostgreSQL als Datenbank](0003-postgresql.md)          | angenommen  |
-| 0004 | [Python-Tooling: uv und Ruff](0004-uv-und-ruff.md)      | angenommen  |
-| 0005 | [Betrieb: Docker Compose, Caddy, UpCloud](0005-betrieb-docker-caddy-upcloud.md) | angenommen |
-| 0006 | [Images in GitHub Actions bauen](0006-images-in-github-actions.md) | angenommen |
-| 0007 | [Secrets nur in .env](0007-secrets-in-env.md)           | angenommen  |
+| No.  | Title                                                                  | Status   |
+|------|------------------------------------------------------------------------|----------|
+| 0001 | [Use ADRs](0001-use-adrs.md)                                           | accepted |
+| 0002 | [Django with server-side templates](0002-django-with-templates.md)     | accepted |
+| 0003 | [PostgreSQL as database](0003-postgresql.md)                           | accepted |
+| 0004 | [Python tooling: uv and Ruff](0004-uv-and-ruff.md)                     | accepted |
+| 0005 | [Hosting: Docker Compose, Caddy, UpCloud](0005-hosting-docker-caddy-upcloud.md) | accepted |
+| 0006 | [Build images in GitHub Actions](0006-build-images-in-github-actions.md) | accepted |
+| 0007 | [Secrets only in .env](0007-secrets-in-env.md)                         | accepted |

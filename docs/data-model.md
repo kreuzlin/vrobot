@@ -1,80 +1,80 @@
-# Datenmodell
+# Data model
 
-Entwurf für Version 1. Wird bei jeder Modelländerung nachgeführt.
-Alle Modelle haben `created_at`/`updated_at` (automatisch).
+Draft for version 1. Updated with every model change.
+All models have `created_at`/`updated_at` (automatic).
+Admin labels (`verbose_name`) are German; field names are English.
 
-## Beitrag – `posts.Post`
+## Post – `posts.Post`
 
-| Feld           | Typ                     | Bemerkung                              |
-|----------------|-------------------------|----------------------------------------|
-| `title`        | CharField               | Pflicht                                |
-| `slug`         | SlugField, eindeutig    | für die URL, aus dem Titel vorbefüllt  |
-| `body`         | TextField               | Inhalt (Formatierung: siehe offene Punkte) |
-| `image`        | ImageField, optional    | inkl. Alt-Text-Feld `image_alt`        |
-| `author`       | CharField               | Anzeigename, nicht zwingend ein Admin-User |
-| `published_at` | DateTimeField           | Beiträge in der Zukunft sind noch nicht sichtbar |
-| `is_published` | BooleanField            | Entwurf vs. veröffentlicht             |
-| `meta_description` | CharField, optional | Fallback: Anfang des Textes            |
+| Field              | Type                  | Notes                                       |
+|--------------------|-----------------------|---------------------------------------------|
+| `title`            | CharField             | required                                    |
+| `slug`             | SlugField, unique     | for the URL, prefilled from the title       |
+| `body`             | TextField             | content (formatting: see open questions)    |
+| `image`            | ImageField, optional  | with alt text field `image_alt`             |
+| `author`           | CharField             | display name, not necessarily an admin user |
+| `published_at`     | DateTimeField         | posts dated in the future are not visible yet |
+| `is_published`     | BooleanField          | draft vs. published                         |
+| `meta_description` | CharField, optional   | fallback: beginning of the body             |
 
-Sortierung: neueste zuerst.
+Ordering: newest first.
 
-## Termin – `events.Event`
+## Event – `events.Event`
 
-| Feld          | Typ                    | Bemerkung                         |
-|---------------|------------------------|-----------------------------------|
-| `title`       | CharField              | Pflicht                           |
-| `start`       | DateTimeField          | Pflicht                           |
-| `end`         | DateTimeField, optional| muss nach `start` liegen          |
-| `location`    | CharField, optional    |                                   |
-| `description` | TextField, optional    |                                   |
-| `link`        | URLField, optional     | z. B. Anmeldung                   |
+| Field         | Type                    | Notes                  |
+|---------------|-------------------------|------------------------|
+| `title`       | CharField               | required               |
+| `start`       | DateTimeField           | required               |
+| `end`         | DateTimeField, optional | must be after `start`  |
+| `location`    | CharField, optional     |                        |
+| `description` | TextField, optional     |                        |
+| `link`        | URLField, optional      | e.g. registration      |
 
-Öffentlich sichtbar: Termine, deren Ende (bzw. Start, wenn kein Ende) nicht in
-der Vergangenheit liegt. Umgesetzt als QuerySet-Methode `upcoming()`; keine
-Löschung, die Termine bleiben im Admin erhalten.
+Publicly visible: events whose end (or start, if there is no end) is not in
+the past. Implemented as a QuerySet method `upcoming()`; nothing is deleted,
+past events remain in the admin.
 
-## Dokument – `documents.Document`
+## Document – `documents.Document`
 
-| Feld        | Typ                          | Bemerkung                     |
-|-------------|------------------------------|-------------------------------|
-| `title`     | CharField                    | Pflicht                       |
-| `category`  | ForeignKey → `DocumentCategory` | z. B. Statuten, Formulare, Jahresberichte |
-| `year`      | PositiveSmallIntegerField    | Pflicht                       |
-| `file`      | FileField                    | primär PDF                    |
-| `description` | TextField, optional        |                               |
+| Field         | Type                            | Notes                                       |
+|---------------|---------------------------------|---------------------------------------------|
+| `title`       | CharField                       | required                                    |
+| `category`    | ForeignKey → `DocumentCategory` | e.g. statutes, forms, annual reports        |
+| `year`        | PositiveSmallIntegerField       | required                                    |
+| `file`        | FileField                       | mainly PDF                                  |
+| `description` | TextField, optional             |                                             |
 
-`DocumentCategory`: `name`, `slug`, `order`. Als eigenes Modell, damit der
-Vorstand Kategorien selbst ergänzen kann.
+`DocumentCategory`: `name`, `slug`, `order`. A separate model so the board
+can add categories themselves.
 
-Anzeige: nach Kategorie gruppiert, innerhalb nach Jahr absteigend.
+Display: grouped by category, within each category by year descending.
 
-## Feste Seite – `pages.Page`
+## Static page – `pages.Page`
 
-| Feld               | Typ                  | Bemerkung                        |
-|--------------------|----------------------|----------------------------------|
-| `title`            | CharField            |                                  |
-| `slug`             | SlugField, eindeutig | `ueber-uns`, `mitmachen`, `kontakt` |
-| `body`             | TextField            |                                  |
-| `meta_description` | CharField            |                                  |
+| Field              | Type              | Notes                                   |
+|--------------------|-------------------|-----------------------------------------|
+| `title`            | CharField         |                                         |
+| `slug`             | SlugField, unique | `ueber-uns`, `mitmachen`, `kontakt`     |
+| `body`             | TextField         |                                         |
+| `meta_description` | CharField         |                                         |
 
-Die Seiten werden per Datenmigration angelegt; Struktur und URLs sind fix,
-nur der Text ist im Admin editierbar. Die Kontaktseite zeigt zusätzlich das
-Formular.
+Pages are created by a data migration; structure and URLs are fixed, only the
+text is editable in the admin. The contact page additionally shows the form.
 
-## Kontaktanfrage – `contact.ContactMessage`
+## Contact message – `contact.ContactMessage`
 
-| Feld         | Typ           | Bemerkung                    |
-|--------------|---------------|------------------------------|
-| `name`       | CharField     |                              |
-| `email`      | EmailField    |                              |
-| `message`    | TextField     |                              |
-| `created_at` | DateTimeField |                              |
+| Field        | Type          | Notes |
+|--------------|---------------|-------|
+| `name`       | CharField     |       |
+| `email`      | EmailField    |       |
+| `message`    | TextField     |       |
+| `created_at` | DateTimeField |       |
 
-Wird gespeichert **und** per E-Mail an den Verein weitergeleitet, damit nichts
-verloren geht, falls der Mailversand ausfällt. Löschfrist festlegen (Datenschutz).
+Stored **and** forwarded by email to the association, so nothing is lost if
+email delivery fails. A retention period needs to be defined (data protection).
 
-## Offene Punkte
+## Open questions
 
-- Textformatierung in Beiträgen/Seiten: Markdown (einfach, sicher) oder
-  Rich-Text-Editor im Admin? → ADR, sobald entschieden.
-- Mehrere Bilder pro Beitrag nötig?
+- Text formatting in posts/pages: Markdown (simple, safe) or a rich text
+  editor in the admin? → ADR once decided.
+- Multiple images per post needed?

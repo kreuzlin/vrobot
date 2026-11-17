@@ -1,67 +1,67 @@
-# Architektur
+# Architecture
 
-## Überblick
+## Overview
 
 ```
 Browser ──HTTPS──▶ Caddy ──HTTP──▶ web (Django + Gunicorn) ──▶ db (PostgreSQL)
                      │
-                     └─ liefert /static/ und /media/ direkt aus
+                     └─ serves /static/ and /media/ directly
 ```
 
-Alles läuft per Docker Compose auf einem UpCloud-Server (Ubuntu 26.04 LTS, x86_64).
+Everything runs via Docker Compose on an UpCloud server (Ubuntu 26.04 LTS, x86_64).
 
-## Komponenten
+## Components
 
-| Dienst  | Aufgabe                                                        |
-|---------|----------------------------------------------------------------|
-| `caddy` | TLS (Let's Encrypt, automatisch), Reverse Proxy, statische Dateien und Medien |
-| `web`   | Django-App unter Gunicorn                                      |
-| `db`    | PostgreSQL, Daten auf benanntem Volume                         |
+| Service | Responsibility                                                       |
+|---------|----------------------------------------------------------------------|
+| `caddy` | TLS (Let's Encrypt, automatic), reverse proxy, static and media files |
+| `web`   | Django app running under Gunicorn                                     |
+| `db`    | PostgreSQL, data on a named volume                                    |
 
-Volumes: `postgres_data`, `media`, `static`, `caddy_data` (Zertifikate).
+Volumes: `postgres_data`, `media`, `static`, `caddy_data` (certificates).
 
-## Django-Struktur (geplant)
+## Django structure (planned)
 
-| App         | Inhalt                                               |
-|-------------|------------------------------------------------------|
-| `config`    | Settings, URLs, WSGI (Projektpaket)                  |
-| `core`      | Basis-Template, Startseite, SEO-Helfer (Titel/Meta)  |
-| `posts`     | Beiträge                                             |
-| `events`    | Agenda                                               |
-| `documents` | Dokumente mit Kategorie und Jahr                     |
-| `pages`     | Feste Seiten (Über uns, Mitmachen)                   |
-| `contact`   | Kontaktformular mit Spamschutz, E-Mail-Versand       |
+| App         | Contents                                              |
+|-------------|-------------------------------------------------------|
+| `config`    | Settings, URLs, WSGI (project package)                |
+| `core`      | Base template, home page, SEO helpers (title/meta)    |
+| `posts`     | Posts                                                 |
+| `events`    | Events calendar                                       |
+| `documents` | Documents with category and year                      |
+| `pages`     | Static pages (About us, Get involved)                 |
+| `contact`   | Contact form with spam protection, email delivery     |
 
-Der GearsBot-Emulator wird nicht integriert, sondern nur verlinkt.
+The GearsBot emulator is not integrated, only linked.
 
-## Konfiguration
+## Configuration
 
-- Alle umgebungsabhängigen Werte über Umgebungsvariablen aus `.env`
-  (`SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`, E-Mail-Zugang …).
-- `.env.example` dokumentiert jede Variable.
-- Ein Settings-Modul; Unterschiede Dev/Prod nur über Umgebungsvariablen.
+- All environment-specific values come from environment variables in `.env`
+  (`SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`, email credentials …).
+- `.env.example` documents every variable.
+- A single settings module; dev/prod differences only via environment variables.
 
-## Build und Deployment
+## Build and deployment
 
-1. Push auf `master` → GitHub Actions: Ruff, Tests, dann Docker-Image für
-   `linux/amd64` bauen und in die GitHub Container Registry (GHCR) pushen.
-2. Auf dem Server: `docker compose pull && docker compose up -d`, danach
-   `migrate` (Details folgen, sobald das Deployment steht).
+1. Push to `master` → GitHub Actions: Ruff, tests, then build the Docker image
+   for `linux/amd64` and push it to the GitHub Container Registry (GHCR).
+2. On the server: `docker compose pull && docker compose up -d`, then
+   `migrate` (details to follow once deployment is set up).
 
-Lokal (Apple Silicon) wird das Image nativ für `arm64` gebaut; das
-Server-Image entsteht nur in CI.
+Locally (Apple Silicon) the image is built natively for `arm64`; the server
+image is only built in CI.
 
-## Betrieb
+## Operations
 
-- **Backups:** regelmässiger `pg_dump` plus Sicherung des Medien-Volumes,
-  ausserhalb des Servers abgelegt (Verfahren noch festzulegen).
-- **Umstellung:** Die alte Seite auf Hostpoint bleibt live, bis die neue unter
-  einer Test-Domain abgenommen ist. Danach DNS umstellen; alte URLs, wo
-  sinnvoll, per Redirect weiterleiten.
+- **Backups:** regular `pg_dump` plus a copy of the media volume, stored off
+  the server (procedure still to be defined).
+- **Cutover:** the old Hostpoint site stays live until the new site has been
+  accepted on a test domain. Then switch DNS and redirect old URLs where
+  useful.
 
-## Offene Punkte
+## Open questions
 
-- Domain/Subdomain für die Testphase
-- E-Mail-Versand für das Kontaktformular (SMTP von Hostpoint oder Dienst)
-- Backup-Ziel
-- Welche Inhalte von der alten Seite übernommen werden
+- Domain/subdomain for the test phase
+- Email delivery for the contact form (Hostpoint SMTP or a service)
+- Backup target
+- Which content to migrate from the old site
