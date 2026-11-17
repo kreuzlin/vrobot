@@ -145,7 +145,9 @@ image is only built in CI.
   server is provisioned.
 - **Test phase:** the new site runs on `www2.vrobot.ch` (A record at
   Hostpoint pointing to the UpCloud server). Caddy sends
-  `X-Robots-Tag: noindex` there so it is not indexed; optional Basic Auth.
+  `X-Robots-Tag: noindex` there so it is not indexed. No Basic Auth (decided
+  by the maintainer); the snippet mechanism in `deploy/caddy.d/` stays
+  available if that changes.
 - **Cutover:** the old Hostpoint site stays live until the new site has been
   accepted on `www2.vrobot.ch`. Then switch DNS, redirect old URLs where
   useful, and let `www2` redirect to the main domain (or remove it).
@@ -162,6 +164,4 @@ Crontab: see [`deployment.md`](deployment.md).
 
 - HSTS: not sent during the test phase; enable in Caddy at go-live (HTTP→HTTPS
   redirects are done by Caddy automatically)
-- Basic Auth on `www2` during the test phase: yes or no (prepared as an
-  optional snippet, see `deploy/caddy.d/README.md`)
 - Which content to migrate from the old site

@@ -141,5 +141,5 @@ docker compose -f compose.prod.yaml logs --tail 100 caddy  # access log, TLS
 ## 8. Go-live (later)
 
 Planned in step 12: switch `SITE_ADDRESS` to the main domain(s), set
-`ROBOTS_TAG=all`, enable HSTS, add redirects for old URLs, remove Basic Auth,
+`ROBOTS_TAG=all`, enable HSTS, add redirects for old URLs,
 then change DNS at Hostpoint.
