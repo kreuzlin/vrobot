@@ -27,12 +27,19 @@ Ordering: newest first.
 | `start`       | DateTimeField           | required               |
 | `end`         | DateTimeField, optional | must be after `start`  |
 | `location`    | CharField, optional     |                        |
-| `description` | TextField, optional     |                        |
+| `description` | TextField, optional     | plain text, line breaks kept |
 | `link`        | URLField, optional      | e.g. registration      |
 
-Publicly visible: events whose end (or start, if there is no end) is not in
-the past. Implemented as a QuerySet method `upcoming()`; nothing is deleted,
-past events remain in the admin.
+Publicly visible ("upcoming"):
+
+- events with an end: until the end has passed;
+- events without an end: for the whole local day (Europe/Zurich) of the start.
+
+Implemented as `Event.objects.upcoming()` (ordered by start) with the Python
+counterpart `Event.is_upcoming()` used in the admin. Nothing is deleted; past
+events remain in the admin (filter "Zeitraum").
+
+Shown on `/agenda/` (all upcoming) and on the home page (next three).
 
 ## Document – `documents.Document`
 
