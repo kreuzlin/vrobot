@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Project apps
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -52,13 +54,14 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.site",
             ],
         },
     },
@@ -101,6 +104,19 @@ STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "staticfiles")
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = env.path("MEDIA_ROOT", default=BASE_DIR / "media")
+
+# --- Site ---------------------------------------------------------------
+
+SITE_NAME = "Verein Robotik Talente"
+SITE_SHORT_NAME = "VRoboT"
+# Document title of the home page; other pages use "<page> – VRoboT".
+SITE_TITLE = f"{SITE_SHORT_NAME} – {SITE_NAME}"
+# Default meta description for pages that do not set their own.
+SITE_DESCRIPTION = (
+    "Der Verein Robotik Talente (VRoboT) fördert Kinder und Jugendliche, "
+    "die sich für Robotik und Programmieren begeistern."
+)
+GEARSBOT_URL = env("GEARSBOT_URL", default="https://gears.aposteriori.com.sg/")
 
 # --- Email ----------------------------------------------------------------
 

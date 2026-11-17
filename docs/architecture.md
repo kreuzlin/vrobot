@@ -32,7 +32,16 @@ Volumes: `postgres_data`, `media`, `static`, `caddy_data` (certificates).
 | `pages`     | Static pages (About us, Get involved)                 |
 | `contact`   | Contact form with spam protection, email via Hostpoint SMTP |
 
-The GearsBot emulator is not integrated, only linked.
+The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`).
+
+### `core` in detail
+
+- `base.html`: layout, header with main navigation, footer, SEO tags
+- `seo.py`: `SeoMixin` and `build_title()` (`"<page> – VRoboT"`, home page:
+  `"VRoboT – Verein Robotik Talente"`)
+- `navigation.py`: main navigation entries; `context_processors.site` resolves
+  them and marks the current page
+- German `404.html`; standalone `500.html` without template logic
 
 ## Configuration
 

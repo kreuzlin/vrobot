@@ -76,8 +76,13 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 
 - Small, topic-focused Django apps (e.g. `posts`, `events`, `documents`,
   `pages`, `contact`).
-- Every public page sets `<title>` and `<meta name="description">` through a
-  shared mechanism in the base template.
+- Every public page sets `<title>` and `<meta name="description">`: views use
+  `core.seo.SeoMixin` (`page_title`, `meta_description`); the base template
+  renders title, description, canonical and Open Graph tags, falling back to
+  `SITE_TITLE` / `SITE_DESCRIPTION` from settings.
+- Templates extend `base.html`. New sections get a main navigation entry in
+  `core/navigation.py`.
+- Styles live in `core/static/core/css/site.css` (plain CSS, no framework).
 - Uploaded files (images, PDFs) live under `MEDIA_ROOT` on a Docker volume;
   static files are collected during the image build.
 - Time logic (e.g. "past events") uses `django.utils.timezone.now()`, never

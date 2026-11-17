@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero">
+    <h1>{{ site_name }}</h1>
+    <p class="lead">{{ site_description }}</p>
+  </section>
+
+  {# Latest posts and upcoming events are added with the posts and events apps. #}
+
+  <section class="teaser">
+    <h2>Robotik im Browser ausprobieren</h2>
+    <p>Mit dem GearsBot-Emulator kannst du Roboter direkt im Browser programmieren – ganz ohne Hardware.</p>
+    <p><a class="button" href="{{ gearsbot_url }}" rel="noopener" target="_blank">GearsBot öffnen</a></p>
+  </section>
+{% endblock %}
