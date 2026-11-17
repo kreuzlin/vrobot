@@ -53,8 +53,10 @@ image is only built in CI.
 
 ## Operations
 
-- **Backups:** regular `pg_dump` plus a copy of the media volume, stored off
-  the server (procedure still to be defined).
+- **Backups:** UpCloud server backups (scheduled snapshots), plus a nightly
+  `pg_dump` to local disk before the snapshot so the database is restorable
+  consistently. See ADR 0008. Schedule and retention: to be set when the
+  server is provisioned.
 - **Cutover:** the old Hostpoint site stays live until the new site has been
   accepted on a test domain. Then switch DNS and redirect old URLs where
   useful.
@@ -63,5 +65,4 @@ image is only built in CI.
 
 - Domain/subdomain for the test phase
 - Email delivery for the contact form (Hostpoint SMTP or a service)
-- Backup target
 - Which content to migrate from the old site

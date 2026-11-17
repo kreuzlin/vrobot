@@ -15,3 +15,4 @@ Template: [`0000-template.md`](0000-template.md)
 | 0005 | [Hosting: Docker Compose, Caddy, UpCloud](0005-hosting-docker-caddy-upcloud.md) | accepted |
 | 0006 | [Build images in GitHub Actions](0006-build-images-in-github-actions.md) | accepted |
 | 0007 | [Secrets only in .env](0007-secrets-in-env.md)                         | accepted |
+| 0008 | [Backups with UpCloud's backup service](0008-backups-with-upcloud.md) | accepted |
