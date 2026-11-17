@@ -89,7 +89,7 @@ class ListViewTests(DocumentTestCase):
 
         # Category order: Statuten before Jahresberichte.
         self.assertLess(
-            content.index("<h2>Statuten</h2>"), content.index("<h2>Jahresberichte</h2>")
+            content.index(">Statuten</h2>"), content.index(">Jahresberichte</h2>")
         )
         # Within a category: newest year first.
         self.assertLess(
@@ -99,7 +99,8 @@ class ListViewTests(DocumentTestCase):
     def test_empty_categories_are_hidden(self):
         self.make("Statuten", "statuten", 2020)
         response = self.client.get(reverse("documents:list"))
-        self.assertNotContains(response, "<h2>Formulare</h2>", html=True)
+        self.assertContains(response, ">Statuten</h2>")
+        self.assertNotContains(response, ">Formulare</h2>")
 
     def test_shows_link_type_and_size(self):
         doc = self.make("Anmeldeformular")

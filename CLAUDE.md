@@ -86,6 +86,12 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 - Templates extend `base.html`. New sections get a main navigation entry in
   `core/navigation.py`.
 - Styles live in `core/static/core/css/site.css` (plain CSS, no framework).
+  Colours from the logo as CSS variables: black `#1A1A1A` (text), red
+  `#E2000A` (accents only), grey `#939CA4` (lines/decoration only – too light
+  for text; use `--text-muted` instead). Errors must not rely on red alone.
+- Logo assets in `core/static/core/img/` are generated from
+  `design/vrobot_logo.png` by `scripts/build_logo_assets.py`; do not edit them
+  by hand.
 - Rich text fields are Markdown: admin widget `core.widgets.MarkdownEditor`,
   output only via the `|markdown` filter. Never render user content with
   `|safe`.

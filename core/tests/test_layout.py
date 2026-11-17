@@ -50,15 +50,35 @@ class HomePageTests(TestCase):
     def test_language_is_swiss_german(self):
         self.assertContains(self.response, '<html lang="de-ch">')
 
-    def test_navigation_marks_current_page(self):
+    def test_logo_links_home_and_marks_current_page(self):
+        # The home page has no navigation entry; the logo link is "current".
         self.assertContains(
-            self.response, f'<a href="{reverse("core:home")}" aria-current="page">'
+            self.response,
+            f'<a class="brand" href="{reverse("core:home")}" aria-current="page">',
         )
+
+    def test_has_favicon_and_default_og_image(self):
+        self.assertContains(self.response, "core/img/favicon.ico")
+        self.assertContains(
+            self.response,
+            'property="og:image" content="http://testserver/static/core/img/logo-full-960.png"',
+        )
+
+    def test_footer_lists_navigation(self):
+        footer = self.response.content.decode().split('class="site-footer"')[1]
+        for url_name in [
+            "posts:list",
+            "events:list",
+            "documents:list",
+            "pages:contact",
+        ]:
+            self.assertIn(f'href="{reverse(url_name)}"', footer)
 
     @override_settings(GEARSBOT_URL="https://gearsbot.example/")
     def test_links_to_gearsbot(self):
         response = self.client.get(reverse("core:home"))
-        self.assertContains(response, 'href="https://gearsbot.example/"', count=2)
+        # Navigation, teaser and footer.
+        self.assertContains(response, 'href="https://gearsbot.example/"', count=3)
 
 
 class ErrorPageTests(TestCase):
