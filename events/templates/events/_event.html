@@ -1,0 +1,13 @@
+{# One event as a list item. Expects `event`; `compact` hides description and link. #}
+<li class="event">
+  <p class="event-date">
+    <time datetime="{{ event.start|date:'c' }}">{{ event.start|date:"l, j. F Y" }}</time>,
+    {{ event.start|date:"H:i" }}{% if event.end %}{% if event.ends_same_day %}–{{ event.end|date:"H:i" }}{% else %} bis <time datetime="{{ event.end|date:'c' }}">{{ event.end|date:"l, j. F Y, H:i" }}</time>{% endif %}{% endif %} Uhr
+  </p>
+  <h3 class="event-title">{{ event.title }}</h3>
+  {% if event.location %}<p class="event-location">{{ event.location }}</p>{% endif %}
+  {% if not compact %}
+    {% if event.description %}<div class="event-description">{{ event.description|linebreaks }}</div>{% endif %}
+    {% if event.link %}<p><a href="{{ event.link }}" rel="noopener">Weitere Informationen</a></p>{% endif %}
+  {% endif %}
+</li>

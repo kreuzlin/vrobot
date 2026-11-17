@@ -9,5 +9,6 @@ admin.site.index_title = "Inhalte verwalten"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("agenda/", include("events.urls")),
     path("", include("core.urls")),
 ]

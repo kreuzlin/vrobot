@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Agenda</h1>
+  {% if events %}
+    <ul class="event-list">
+      {% for event in events %}
+        {% include "events/_event.html" %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Zurzeit sind keine Termine geplant.</p>
+  {% endif %}
+{% endblock %}

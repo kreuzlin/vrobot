@@ -6,7 +6,21 @@
     <p class="lead">{{ site_description }}</p>
   </section>
 
-  {# Latest posts and upcoming events are added with the posts and events apps. #}
+  {# Latest posts are added with the posts app. #}
+
+  <section class="home-events">
+    <h2>Nächste Termine</h2>
+    {% if upcoming_events %}
+      <ul class="event-list">
+        {% for event in upcoming_events %}
+          {% include "events/_event.html" with compact=True %}
+        {% endfor %}
+      </ul>
+      <p><a href="{% url 'events:list' %}">Alle Termine</a></p>
+    {% else %}
+      <p>Zurzeit sind keine Termine geplant.</p>
+    {% endif %}
+  </section>
 
   <section class="teaser">
     <h2>Robotik im Browser ausprobieren</h2>
