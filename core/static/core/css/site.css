@@ -1,0 +1,181 @@
+/* Base styles for vrobot.ch. Deliberately small: no framework, no build step. */
+
+:root {
+  --color-text: #1d2433;
+  --color-muted: #5b6475;
+  --color-bg: #ffffff;
+  --color-surface: #f3f5f9;
+  --color-border: #dde2ea;
+  --color-accent: #0b5cad;
+  --color-accent-dark: #084a8c;
+  --radius: 0.5rem;
+  --max-width: 64rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+a:hover {
+  color: var(--color-accent-dark);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+main {
+  flex: 1;
+  padding-block: 2rem 3rem;
+}
+
+/* Accessibility helpers */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-bg);
+  z-index: 10;
+}
+
+/* Header and navigation */
+
+.site-header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding-block: 1rem;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.brand-short {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.brand-long {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.main-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: var(--color-text);
+  padding-block: 0.25rem;
+  border-bottom: 2px solid transparent;
+}
+
+.main-nav a:hover,
+.main-nav a[aria-current="page"] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* Content blocks */
+
+.hero {
+  padding-block: 1rem 2rem;
+}
+
+.lead {
+  font-size: 1.2rem;
+  color: var(--color-muted);
+  max-width: 40rem;
+}
+
+.teaser {
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+
+.button {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.button:hover {
+  background: var(--color-accent-dark);
+  color: #fff;
+}
+
+/* Footer */
+
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
