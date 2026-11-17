@@ -50,10 +50,14 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
     description (English) explains what changed and how it was tested.
   - The maintainer reviews and merges the PR. Do not merge PRs yourself
     unless explicitly asked.
+  - `main` is protected by a ruleset that only allows **squash merges**. The
+    PR title becomes the commit message on `main`, so write it as a good
+    commit subject (English, imperative, e.g. "Add events calendar").
   - Once CI exists, a PR is only ready when CI is green.
 - **Small steps.** Commit after every working step (tests green, Ruff clean).
   Keep PRs small – one step of the plan per PR.
-- Before committing: `uv run ruff check . && uv run ruff format --check . && uv run python manage.py test`.
+- Before committing: `uv run ruff check . && uv run ruff format --check .` and
+  `docker compose exec web python manage.py test`.
 - Tests cover the most important behaviour (e.g. events calendar hides past
   events, contact form incl. spam protection, post visibility, page titles and
   meta descriptions).
@@ -82,9 +86,14 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 ## Useful commands
 
 ```bash
-docker compose up --build
-docker compose exec web uv run python manage.py <command>
+docker compose up --build                            # dev environment
+docker compose exec web python manage.py <command>   # manage.py inside Docker
+docker compose exec web python manage.py test
 uv run ruff check . --fix
 uv run ruff format .
-uv run python manage.py test
 ```
+
+- Inside the container use `python manage.py`, not `uv run` (the venv is
+  at `/opt/venv` and on `PATH`; `uv run` would try to sync dev dependencies).
+- `compose.yaml` is the development setup; production gets its own Compose
+  file with Caddy and the GHCR image.
