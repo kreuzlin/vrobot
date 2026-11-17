@@ -5,6 +5,7 @@ All environment-specific values come from environment variables (see
 production differ only in their environment.
 """
 
+import sys
 from pathlib import Path
 
 import environ
@@ -47,6 +48,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # Serves static files in production (gunicorn does not); see architecture.md.
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -110,6 +113,20 @@ STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "staticfiles")
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = env.path("MEDIA_ROOT", default=BASE_DIR / "media")
+
+# Static files get hashed names and are pre-compressed at build time, so they
+# can be cached forever. The manifest only exists after collectstatic (image
+# build); tests run without it and use the plain storage.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    },
+}
+if "test" in sys.argv[1:2]:
+    STORAGES["staticfiles"]["BACKEND"] = (
+        "django.contrib.staticfiles.storage.StaticFilesStorage"
+    )
 
 # --- Site ---------------------------------------------------------------
 

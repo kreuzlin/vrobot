@@ -119,5 +119,5 @@ uv run ruff format .
 
 - Inside the container use `python manage.py`, not `uv run` (the venv is
   at `/opt/venv` and on `PATH`; `uv run` would try to sync dev dependencies).
-- `compose.yaml` is the development setup; production gets its own Compose
-  file with Caddy and the GHCR image.
+- `compose.yaml` is the development setup; `compose.prod.yaml` is production
+  (Caddy + GHCR image, see `docs/deployment.md`).

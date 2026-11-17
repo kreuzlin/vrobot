@@ -112,6 +112,15 @@ development Django serves them (`DEBUG` only); in production Caddy does.
   time; runs as non-root user `app`; default command is Gunicorn on port 8000.
 - `compose.yaml` (development): `db` (PostgreSQL 18, volume `postgres_data`)
   and `web` (bind-mounted source, `migrate` + `runserver` on start).
+- `compose.prod.yaml` (production): `db`, `web` (GHCR image, Gunicorn, not
+  published) and `caddy` (ports 80/443, config `deploy/Caddyfile`).
+  Volumes: `postgres_data`, `media` (shared read-only with Caddy),
+  `caddy_data` (certificates), `caddy_config`.
+- Static files: served by Django via **WhiteNoise** (hashed file names,
+  pre-compressed, cached for a year), so they ship with the image and need no
+  shared volume. Tests use plain storage because the manifest only exists
+  after `collectstatic`.
+- Media files: served by Caddy directly from the `media` volume (`/media/`).
 
 ## Build and deployment
 
@@ -121,8 +130,9 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
    - push to `main` (i.e. after a merge): the image is pushed to GHCR as
      `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`.
-2. On the server: `docker compose pull && docker compose up -d`, then
-   `migrate` (details to follow once deployment is set up).
+2. On the server: `scripts/deploy.sh` pulls the repo and image, runs
+   `migrate`, then restarts the containers. Rollback: `IMAGE_TAG=sha-<commit>`.
+   Step by step: [`deployment.md`](deployment.md).
 
 Locally (Apple Silicon) the image is built natively for `arm64`; the server
 image is only built in CI.
@@ -143,11 +153,15 @@ image is only built in CI.
 ## Scheduled jobs (production)
 
 - daily: `python manage.py delete_old_contact_messages`
-- nightly: `pg_dump` before the UpCloud backup (ADR 0008)
+- nightly: `scripts/backup-db.sh` (`pg_dump`, custom format, kept 14 days in
+  `backups/`) before the UpCloud backup (ADR 0008)
+
+Crontab: see [`deployment.md`](deployment.md).
 
 ## Open questions
 
-- Production hardening: HSTS and HTTP→HTTPS redirect (Caddy vs. Django),
-  to be settled with the production setup
-- Basic Auth on `www2` during the test phase: yes or no
+- HSTS: not sent during the test phase; enable in Caddy at go-live (HTTP→HTTPS
+  redirects are done by Caddy automatically)
+- Basic Auth on `www2` during the test phase: yes or no (prepared as an
+  optional snippet, see `deploy/caddy.d/README.md`)
 - Which content to migrate from the old site

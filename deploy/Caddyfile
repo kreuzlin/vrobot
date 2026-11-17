@@ -1,0 +1,40 @@
+# Caddy configuration for production (ADR 0005). Values come from .env via
+# compose.prod.yaml. Caddy obtains and renews the TLS certificate itself and
+# redirects HTTP to HTTPS.
+{
+	email {$ACME_EMAIL}
+}
+
+{$SITE_ADDRESS} {
+	# Server-specific snippets, e.g. Basic Auth during the test phase
+	# (see deploy/caddy.d/README.md). No matching file is fine.
+	import /etc/caddy/caddy.d/*.caddy
+
+	encode zstd gzip
+
+	header {
+		# "noindex, nofollow" by default (test phase on www2); set
+		# ROBOTS_TAG=all in .env when the site goes live.
+		X-Robots-Tag "{$ROBOTS_TAG}"
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		-Server
+	}
+
+	# Uploaded images and documents (Django's MEDIA_ROOT volume).
+	handle_path /media/* {
+		root * /srv/media
+		header Cache-Control "public, max-age=86400"
+		file_server
+	}
+
+	# Everything else, including /static/ (served by WhiteNoise).
+	handle {
+		reverse_proxy web:8000
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
