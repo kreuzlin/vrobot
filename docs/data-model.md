@@ -10,7 +10,7 @@ Admin labels (`verbose_name`) are German; field names are English.
 |--------------------|-----------------------|---------------------------------------------|
 | `title`            | CharField             | required                                    |
 | `slug`             | SlugField, unique     | for the URL, prefilled from the title       |
-| `body`             | TextField             | content (formatting: see open questions)    |
+| `body`             | TextField             | Markdown, rendered and sanitised (ADR 0009) |
 | `image`            | ImageField, optional  | with alt text field `image_alt`             |
 | `author`           | CharField             | display name, not necessarily an admin user |
 | `published_at`     | DateTimeField         | posts dated in the future are not visible yet |
@@ -55,7 +55,7 @@ Display: grouped by category, within each category by year descending.
 |--------------------|-------------------|-----------------------------------------|
 | `title`            | CharField         |                                         |
 | `slug`             | SlugField, unique | `ueber-uns`, `mitmachen`, `kontakt`     |
-| `body`             | TextField         |                                         |
+| `body`             | TextField         | Markdown (ADR 0009)                     |
 | `meta_description` | CharField         |                                         |
 
 Pages are created by a data migration; structure and URLs are fixed, only the
@@ -75,6 +75,4 @@ email delivery fails. A retention period needs to be defined (data protection).
 
 ## Open questions
 
-- Text formatting in posts/pages: Markdown (simple, safe) or a rich text
-  editor in the admin? → ADR once decided.
 - Multiple images per post needed?

@@ -30,7 +30,7 @@ Volumes: `postgres_data`, `media`, `static`, `caddy_data` (certificates).
 | `events`    | Events calendar                                       |
 | `documents` | Documents with category and year                      |
 | `pages`     | Static pages (About us, Get involved)                 |
-| `contact`   | Contact form with spam protection, email delivery     |
+| `contact`   | Contact form with spam protection, email via Hostpoint SMTP |
 
 The GearsBot emulator is not integrated, only linked.
 
@@ -57,12 +57,14 @@ image is only built in CI.
   `pg_dump` to local disk before the snapshot so the database is restorable
   consistently. See ADR 0008. Schedule and retention: to be set when the
   server is provisioned.
+- **Test phase:** the new site runs on `www2.vrobot.ch` (A record at
+  Hostpoint pointing to the UpCloud server). Caddy sends
+  `X-Robots-Tag: noindex` there so it is not indexed; optional Basic Auth.
 - **Cutover:** the old Hostpoint site stays live until the new site has been
-  accepted on a test domain. Then switch DNS and redirect old URLs where
-  useful.
+  accepted on `www2.vrobot.ch`. Then switch DNS, redirect old URLs where
+  useful, and let `www2` redirect to the main domain (or remove it).
 
 ## Open questions
 
-- Domain/subdomain for the test phase
-- Email delivery for the contact form (Hostpoint SMTP or a service)
+- Basic Auth on `www2` during the test phase: yes or no
 - Which content to migrate from the old site

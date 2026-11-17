@@ -16,3 +16,5 @@ Template: [`0000-template.md`](0000-template.md)
 | 0006 | [Build images in GitHub Actions](0006-build-images-in-github-actions.md) | accepted |
 | 0007 | [Secrets only in .env](0007-secrets-in-env.md)                         | accepted |
 | 0008 | [Backups with UpCloud's backup service](0008-backups-with-upcloud.md) | accepted |
+| 0009 | [Markdown for rich text content](0009-markdown-for-content.md)        | accepted |
+| 0010 | [Send email via Hostpoint SMTP](0010-email-via-hostpoint-smtp.md)     | accepted |
