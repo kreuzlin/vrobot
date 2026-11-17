@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load markdown %}
+
+{% block content %}
+  <article class="post">
+    <header>
+      <p class="post-meta">
+        <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j. F Y" }}</time>
+        · {{ post.author }}
+      </p>
+      <h1>{{ post.title }}</h1>
+    </header>
+
+    {% if post.image %}
+      <img class="post-image" src="{{ post.image.url }}" alt="{{ post.image_alt }}">
+    {% endif %}
+
+    <div class="prose">
+      {{ post.body|markdown }}
+    </div>
+  </article>
+
+  <p><a href="{% url 'posts:list' %}">Alle Beiträge</a></p>
+{% endblock %}

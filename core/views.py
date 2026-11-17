@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 
 from events.models import Event
+from posts.models import Post
 
 from .seo import SeoMixin
 
@@ -11,5 +12,6 @@ class HomeView(SeoMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["latest_posts"] = Post.objects.published()[:3]
         context["upcoming_events"] = Event.objects.upcoming()[:3]
         return context

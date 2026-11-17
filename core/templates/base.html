@@ -13,6 +13,7 @@
   <meta property="og:title" content="{{ full_title }}">
   <meta property="og:description" content="{{ meta_description|default:site_description }}">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  {% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
   <link rel="stylesheet" href="{% static 'core/css/site.css' %}">
   {% block extra_head %}{% endblock %}
 </head>

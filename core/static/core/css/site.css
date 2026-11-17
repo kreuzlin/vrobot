@@ -217,3 +217,81 @@ main {
 .event-location {
   color: var(--color-muted);
 }
+
+/* Posts */
+
+.home-posts {
+  margin-bottom: 2rem;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1.5rem;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.post-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.post-card-body {
+  padding: 1rem;
+}
+
+.post-card h3 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.post-card h3 a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.post-card h3 a:hover {
+  color: var(--color-accent);
+}
+
+.post-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.post {
+  max-width: 44rem;
+}
+
+.post-image {
+  display: block;
+  margin-block: 1rem 1.5rem;
+  border-radius: var(--radius);
+}
+
+.prose {
+  font-size: 1.05rem;
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+.pagination {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 2rem;
+}

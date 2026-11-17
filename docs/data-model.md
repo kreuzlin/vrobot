@@ -11,13 +11,19 @@ Admin labels (`verbose_name`) are German; field names are English.
 | `title`            | CharField             | required                                    |
 | `slug`             | SlugField, unique     | for the URL, prefilled from the title       |
 | `body`             | TextField             | Markdown, rendered and sanitised (ADR 0009) |
-| `image`            | ImageField, optional  | with alt text field `image_alt`             |
-| `author`           | CharField             | display name, not necessarily an admin user |
+| `image`            | ImageField, optional  | stored under `media/posts/<year>/`          |
+| `image_alt`        | CharField             | required when an image is set (also enforced in the browser, so the chosen file is not lost on form errors) |
+| `author`           | CharField             | display name; prefilled with the admin user's name |
 | `published_at`     | DateTimeField         | posts dated in the future are not visible yet |
 | `is_published`     | BooleanField          | draft vs. published                         |
 | `meta_description` | CharField, optional   | fallback: beginning of the body             |
 
-Ordering: newest first.
+Visible on the website: `is_published` and `published_at <= now`
+(`Post.objects.published()`, newest first; `Post.is_visible()` per object).
+Drafts and scheduled posts return 404.
+
+Shown on `/beitraege/` (10 per page), `/beitraege/<slug>/` and on the home
+page (latest three). The detail page sets `og:image` when an image exists.
 
 ## Event – `events.Event`
 

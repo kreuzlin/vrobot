@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Beiträge</h1>
+  {% if posts %}
+    <div class="post-grid">
+      {% for post in posts %}
+        {% include "posts/_post_card.html" %}
+      {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+      <nav class="pagination" aria-label="Seiten">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" rel="prev">Neuere Beiträge</a>
+        {% endif %}
+        <span>Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" rel="next">Ältere Beiträge</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <p>Noch keine Beiträge.</p>
+  {% endif %}
+{% endblock %}
