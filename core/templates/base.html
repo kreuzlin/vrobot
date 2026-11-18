@@ -45,6 +45,7 @@
           {% for item in nav_items %}
             <li><a href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
           {% endfor %}
+          <li><a class="external" href="{{ robochallenge_url }}" rel="noopener" target="_blank">RoboChallenge<span class="visually-hidden"> (öffnet in neuem Tab)</span></a></li>
           <li><a class="external" href="{{ gearsbot_url }}" rel="noopener" target="_blank">GearsBot<span class="visually-hidden"> (öffnet in neuem Tab)</span></a></li>
         </ul>
       </nav>
@@ -80,6 +81,7 @@
       <div>
         <h2>Online</h2>
         <ul>
+          <li><a href="{{ robochallenge_url }}" rel="noopener" target="_blank">RoboChallenge<span class="visually-hidden"> (öffnet in neuem Tab)</span></a></li>
           <li><a href="{{ gearsbot_url }}" rel="noopener" target="_blank">GearsBot-Emulator<span class="visually-hidden"> (öffnet in neuem Tab)</span></a></li>
           <li><a href="{% url 'admin:index' %}" rel="nofollow">Anmeldung Redaktion</a></li>
         </ul>

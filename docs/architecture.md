@@ -36,6 +36,11 @@ The GearsBot emulator is not integrated, only linked (`GEARSBOT_URL`). The
 old site hosted its own copy under `/python/public/`; we link the official
 instance instead (maintainer decision), and the old path will redirect there.
 
+The RoboChallenge (robotics competition in Trimmis, co-organised by VRoboT)
+has its own website; we link it (`ROBOCHALLENGE_URL`) in the main navigation,
+the footer and a red teaser on the home page. The teaser has no dates so it
+does not go stale; current dates go into posts and events.
+
 ### `core` in detail
 
 - `base.html`: layout, header with main navigation, footer, SEO tags
@@ -82,9 +87,10 @@ access logs come from Caddy.
 - Colours from the logo (see `site.css` header and CLAUDE.md), system font
   stack (no web fonts, no external requests).
 - Header: logo symbol + "VRoboT / Verein Robotik Talente"; the logo links to
-  the home page (no "Start" menu entry). Below 52rem the navigation collapses
-  behind a "Menü" button (`core/static/core/js/site.js`); without JavaScript
-  it stays visible.
+  the home page (no "Start" menu entry). Below 68rem (the width where logo
+  and all menu items still fit on one line) the navigation collapses behind a
+  "Menü" button (`core/static/core/js/site.js`); without JavaScript it stays
+  visible. Below 52rem the logo and brand text get smaller.
 - Recurring elements taken from the logo: red slanted tab before section
   titles, grey "circuit line" with red end above the footer.
 - Logo: only a raster source exists (`design/vrobot_logo.png`, no SVG).
