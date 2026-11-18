@@ -69,10 +69,13 @@ repository (docs.docker.com, "Install Docker Engine on Ubuntu"), then
 
 ## 2. DNS
 
-At Hostpoint: an `A` record (and `AAAA` if the server has IPv6) for
-`www2.vrobot.ch` pointing to the server. Do not change any other records
-(the old site stays live). Caddy can only obtain the certificate once this
-record resolves.
+At Hostpoint: an `A` record for `www2.vrobot.ch` pointing to the server
+(`212.147.228.149`). Do not change any other records (the old site stays
+live). The zone has a wildcard `*` record (A and AAAA) pointing to Hostpoint;
+an explicit `www2` record takes precedence over it, so no `AAAA` record must
+exist for `www2` (the server has no IPv6 configured). Caddy can only obtain
+the certificate once this record resolves. Hostpoint published the change
+within minutes.
 
 ## 3. First deployment
 
@@ -96,8 +99,27 @@ Edit `.env` for production:
 | `SITE_ADDRESS` | `www2.vrobot.ch` |
 | `ROBOTS_TAG` | `noindex, nofollow` (test phase) |
 | `POSTGRES_PASSWORD` | new random password, same in `DATABASE_URL` |
-| `EMAIL_*`, `DEFAULT_FROM_EMAIL` | Hostpoint mailbox (ADR 0010) |
+| `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_SSL` | `asmtp.mail.hostpoint.ch`, `465`, `true` |
+| `EMAIL_HOST_USER` | the website's own mailbox, e.g. `mail@vrobot.ch` |
+| `EMAIL_HOST_PASSWORD` | its password, in single quotes (see below) |
+| `DEFAULT_FROM_EMAIL` | `VRoboT <mail@vrobot.ch>` |
 | `CONTACT_RECIPIENTS` | addresses for contact form messages |
+
+Secrets are entered on the server by the maintainer, never passed through
+chat, tickets or the repo. Put passwords in **single quotes**
+(`EMAIL_HOST_PASSWORD='...'`): Docker Compose interpolates `$` in unquoted
+values. A password can be written without echoing it, e.g. with
+`read -rsp "Passwort: " PW` and a small script that updates `.env`.
+
+**Before DNS points to the server**, test over plain HTTP on the IP: set
+`SITE_ADDRESS=:80` and add the IP to `ALLOWED_HOSTS`. Do not set the domain
+earlier – Caddy would keep failing the ACME challenge and can hit Let's
+Encrypt's rate limit for failed validations. Once the Hostpoint name servers
+answer with the new IP (check with `dig +short www2.vrobot.ch A
+@ns.hostpoint.ch`, which bypasses local caches), set
+`SITE_ADDRESS=www2.vrobot.ch`, remove the IP from `ALLOWED_HOSTS` and
+recreate the containers (see "Changing `.env`"). Caddy obtains the
+certificate within seconds.
 
 Then:
 
@@ -109,7 +131,21 @@ docker compose -f compose.prod.yaml exec web python manage.py import_old_site
 ```
 
 Check `https://www2.vrobot.ch/`, log in to `/admin/`, send a test message via
-the contact form.
+the contact form. Test email sending directly:
+
+```bash
+docker compose -f compose.prod.yaml exec -T web python manage.py sendtestemail <address>
+```
+
+### Changing `.env`
+
+`docker compose up -d` does not notice changes inside `.env`. Recreate the
+affected containers:
+
+```bash
+docker compose -f compose.prod.yaml up -d --force-recreate web    # Django settings
+docker compose -f compose.prod.yaml up -d --force-recreate caddy  # SITE_ADDRESS, ROBOTS_TAG
+```
 
 ## 4. Deploying updates
 
