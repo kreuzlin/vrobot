@@ -1,6 +1,6 @@
 """Tests for the events calendar."""
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from django.core.exceptions import ValidationError
@@ -131,6 +131,36 @@ class EventListViewTests(TestCase):
         response = self.client.get(reverse("events:list"))
         self.assertContains(response, "Samstag, 2. März 2030")
         self.assertContains(response, "09:30")
+
+
+class AgendaByMonthTests(TestCase):
+    def test_events_are_grouped_by_month_with_jump_links(self):
+        Event.objects.create(title="Training A", start=at(2030, 3, 1, 18))
+        Event.objects.create(title="Training B", start=at(2030, 3, 8, 18))
+        Event.objects.create(title="Training C", start=at(2030, 4, 5, 18))
+        response = self.client.get(reverse("events:list"))
+        content = response.content.decode()
+
+        self.assertEqual(
+            [len(group["events"]) for group in response.context["months"]], [2, 1]
+        )
+        self.assertContains(response, 'href="#monat-2030-03"')
+        self.assertContains(response, 'id="monat-2030-04"')
+        self.assertInHTML(
+            '<h2 class="section-title" id="monat-2030-03-titel">März 2030</h2>',
+            content,
+        )
+        self.assertLess(content.index("März 2030</h2>"), content.index("Training A"))
+        self.assertLess(content.index("Training B"), content.index("April 2030</h2>"))
+
+    def test_month_uses_swiss_local_time(self):
+        # 31 March 23:30 UTC is already 1 April in Switzerland (CEST, UTC+2).
+        Event.objects.create(
+            title="Mitternacht",
+            start=datetime(2030, 3, 31, 23, 30, tzinfo=UTC),
+        )
+        response = self.client.get(reverse("events:list"))
+        self.assertEqual(response.context["months"][0]["month"].month, 4)
 
 
 class HomePageEventsTests(TestCase):
