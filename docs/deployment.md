@@ -248,5 +248,6 @@ site redirect to the new pages (`core/legacy.py`). Caddy sends HSTS
    `https://www.vrobot.ch/agenda/` and `https://www2.vrobot.ch/` → 301 to
    `https://vrobot.ch/…`, `https://vrobot.ch/about.php` → `/ueber-uns/`,
    admin login, contact form.
-6. Afterwards: cancel the old web hosting at Hostpoint (keep the domain and
-   the mailboxes).
+6. The Hostpoint web hosting stays (still used for other purposes, decided
+   2026-11-18); only `vrobot.ch` and `www` no longer point to it. Do not
+   cancel it as part of the website.
