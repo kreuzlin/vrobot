@@ -156,9 +156,12 @@ image is only built in CI.
   `X-Robots-Tag: noindex` there so it is not indexed. No Basic Auth (decided
   by the maintainer); the snippet mechanism in `deploy/caddy.d/` stays
   available if that changes.
-- **Cutover:** the old Hostpoint site stays live until the new site has been
-  accepted on `www2.vrobot.ch`. Then switch DNS, redirect old URLs where
-  useful, and let `www2` redirect to the main domain (or remove it).
+- **Cutover:** main address `https://vrobot.ch`; `www` and `www2` redirect
+  there (Caddy). Old PHP URLs (`about.php`, `engage.php`, `agenda.php`,
+  `contact.php`, `index.php`, `post.php?ID=…`, `attachments/…`,
+  `python/public/…`) redirect to the new pages (`core/legacy.py`). Caddy sends
+  HSTS for one year (no `includeSubDomains`, so mail hosts are unaffected).
+  Steps: `docs/deployment.md`, "Go-live".
 
 ## Scheduled jobs (production)
 
@@ -194,5 +197,4 @@ instance is linked), the Twitter link, the outdated orange payment slip
 
 ## Open questions
 
-- HSTS: not sent during the test phase; enable in Caddy at go-live (HTTP→HTTPS
-  redirects are done by Caddy automatically)
+None at the moment.

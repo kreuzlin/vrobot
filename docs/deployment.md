@@ -202,8 +202,40 @@ docker compose -f compose.prod.yaml logs --tail 100 web    # Django/Gunicorn
 docker compose -f compose.prod.yaml logs --tail 100 caddy  # access log, TLS
 ```
 
-## 8. Go-live (later)
+## 8. Go-live
 
-Planned in step 12: switch `SITE_ADDRESS` to the main domain(s), set
-`ROBOTS_TAG=all`, enable HSTS, add redirects for old URLs,
-then change DNS at Hostpoint.
+Main address `https://vrobot.ch`; `www.vrobot.ch` and `www2.vrobot.ch`
+redirect there permanently (Caddy, `REDIRECT_ADDRESSES`). URLs of the old PHP
+site redirect to the new pages (`core/legacy.py`). Caddy sends HSTS
+(1 year, without subdomains).
+
+1. Merge the go-live PR, wait for the CI image. Do **not** deploy yet:
+   `REDIRECT_ADDRESSES` is required by the new Caddyfile.
+2. DNS at Hostpoint (TTL is 5 minutes): `vrobot.ch` and `www.vrobot.ch`
+   `A` → `212.147.228.149`; delete their `AAAA` records (they point to
+   Hostpoint's web server). Do not touch `MX`, `SPF` or other mail records.
+   If the domain is attached to the Hostpoint web hosting, detach it there
+   first, otherwise Hostpoint may reset the records.
+3. Check the authoritative name servers until both names answer with the new
+   IP and no AAAA: `dig +short vrobot.ch A @ns.hostpoint.ch` (same for `www`).
+4. Update `.env` and deploy:
+
+   ```
+   SITE_ADDRESS=vrobot.ch
+   REDIRECT_ADDRESSES=www.vrobot.ch, www2.vrobot.ch
+   ALLOWED_HOSTS=vrobot.ch
+   CSRF_TRUSTED_ORIGINS=https://vrobot.ch
+   ROBOTS_TAG=all
+   ```
+
+   ```bash
+   scripts/deploy.sh   # recreates web and caddy with the new .env
+   ```
+
+   Caddy obtains certificates for all three names within seconds.
+5. Check: `https://vrobot.ch/` (200, no `X-Robots-Tag: noindex`),
+   `https://www.vrobot.ch/agenda/` and `https://www2.vrobot.ch/` → 301 to
+   `https://vrobot.ch/…`, `https://vrobot.ch/about.php` → `/ueber-uns/`,
+   admin login, contact form.
+6. Afterwards: cancel the old web hosting at Hostpoint (keep the domain and
+   the mailboxes).

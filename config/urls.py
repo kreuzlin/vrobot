@@ -45,6 +45,8 @@ urlpatterns = [
     path("agenda/", include("events.urls")),
     path("beitraege/", include("posts.urls")),
     path("dokumente/", include("documents.urls")),
+    # Old PHP site URLs (about.php, attachments/…) → new pages.
+    path("", include("core.legacy")),
     path("", include("pages.urls")),
     path("", include("core.urls")),
 ]
