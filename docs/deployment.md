@@ -159,6 +159,17 @@ cd /srv/vrobot && scripts/deploy.sh
 The script pulls the repo and images, runs migrations, restarts the
 containers and removes old images.
 
+Wait until the CI run for the merge commit has pushed the image
+(`gh run list --branch main --limit 1`), otherwise `latest` is still the
+previous build. Afterwards check that the site runs the new commit:
+
+```bash
+curl -s https://vrobot.ch/version   # {"commit": "<sha>", "short": "<sha7>"}
+```
+
+The commit is baked into the image by CI (`GIT_COMMIT` build arg →
+`APP_COMMIT`); locally built images report `dev`.
+
 **Rollback** to an earlier build: set `IMAGE_TAG=sha-<commit>` in `.env` and
 run `scripts/deploy.sh` again (set it back to `latest` afterwards). Migrations
 are not rolled back automatically.

@@ -48,6 +48,8 @@ does not go stale; current dates go into posts and events.
   `"VRoboT – Verein Robotik Talente"`)
 - `navigation.py`: main navigation entries; `context_processors.site` resolves
   them and marks the current page
+- `/version`: JSON with the git commit of the running image (`APP_COMMIT`,
+  set by CI as build arg), used to compare the live site with `main`
 - German `404.html`; standalone `500.html` without template logic
 - `markdown.py`: `render_markdown()` (Markdown → HTML, sanitised with `nh3`
   allowlist; `# ` headings become `<h2>`), template filter `|markdown`

@@ -65,7 +65,8 @@ directly (not `uv run`).
 
 ## Documentation
 
-- [`CLAUDE.md`](CLAUDE.md) – working rules for Claude Code (and humans)
+- [`docs/STATUS.md`](docs/STATUS.md) – **current state, open issues, next steps (start here)**
+- [`CLAUDE.md`](CLAUDE.md) – working rules for Claude Code (and humans), incl. the session start routine (`/start`)
 - [`docs/architecture.md`](docs/architecture.md) – structure, deployment, operations
 - [`docs/deployment.md`](docs/deployment.md) – server setup, deployments, backups
 - [`docs/data-model.md`](docs/data-model.md) – data model
