@@ -51,12 +51,26 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
     description (English) explains what changed and how it was tested.
   - The maintainer reviews and merges the PR. Do not merge PRs yourself
     unless explicitly asked.
-  - `main` is protected by a ruleset that only allows **squash merges**. The
-    PR title becomes the commit message on `main`, so write it as a good
-    commit subject (English, imperative, e.g. "Add events calendar").
+  - `main` is protected by the ruleset "protect main" that only allows
+    **squash merges**. The PR title becomes the commit message on `main`, so
+    write it as a good commit subject (English, imperative, e.g. "Add events
+    calendar").
   - The ruleset also requires the CI checks "Lint and test" and
     "Build image (linux/amd64)" to pass before a PR can be merged. If a job
     is renamed in `.github/workflows/ci.yml`, update the ruleset as well.
+  - Repository settings: **auto-merge is allowed** and **head branches are
+    deleted automatically** after the merge.
+- **Merging (only when asked):**
+  - Use `gh pr merge <N> --squash --auto`. With green checks GitHub merges
+    right away; otherwise the PR is queued and merges once the checks pass.
+  - Then check the result with
+    `gh pr view <N> --json state,mergedAt,autoMergeRequest` **before**
+    waiting for CI or deploying: `state` is `MERGED`, or `autoMergeRequest`
+    is set (queued). Anything else means the merge did not happen – report
+    it, do not wait.
+  - If the PR is already merged, say so and skip the merge command.
+- **Do not pipe `gh` output** through `tail`, `head`, `grep` or similar, and
+  do not hide its stderr: errors and hints from `gh` must stay visible.
 - **Small steps.** Commit after every working step (tests green, Ruff clean).
   Keep PRs small – one step of the plan per PR.
 - Before committing: `uv run ruff check . && uv run ruff format --check .` and
