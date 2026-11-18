@@ -8,9 +8,14 @@ on:
   push:
     branches: [main]
 
+# Pull requests: a new push cancels the running check of the same PR.
+# main: runs are never cancelled but queued, so every merge gets its image
+# (sha-<commit>) and `latest` is always pushed in merge order (#26). GitHub
+# keeps at most one pending run per group: with three or more merges in a few
+# minutes, the middle pending run is replaced by the newest one.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

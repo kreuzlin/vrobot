@@ -4,16 +4,16 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-18 (PR "Add session start routine, STATUS.md and /version")_
+_Last updated: 2026-11-18 (PR "Queue CI runs on main instead of cancelling them")_
 
 ## Live
 
 - **https://vrobot.ch** – live on the new server since **2026-11-18**.
   `www.vrobot.ch` and `www2.vrobot.ch` redirect there (301); URLs of the old
   PHP site redirect to the new pages (`core/legacy.py`).
-- Deployed commit: `curl -s https://vrobot.ch/version` (available once this PR
-  is deployed; before that the image label `org.opencontainers.image.revision`
-  on the server shows it). Compare with `git rev-parse origin/main`.
+- Deployed commit: `curl -s https://vrobot.ch/version`, compare with
+  `git rev-parse origin/main`. Last deploy: `039ded0` (2026-11-18). CI-only
+  changes (like #26) need no deploy.
 - Search engines: indexing allowed (`ROBOTS_TAG=all`), HSTS one year.
 
 ## Infrastructure
@@ -29,7 +29,7 @@ _Last updated: 2026-11-18 (PR "Add session start routine, STATUS.md and /version
 | Cron | 03:00 `delete_old_contact_messages` |
 | Mail | Hostpoint SMTP, sender `mail@vrobot.ch`; contact form recipient set in the server `.env` |
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
-| CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main` |
+| CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled |
 
 Runbook: [`deployment.md`](deployment.md). Architecture:
 [`architecture.md`](architecture.md). Decisions: [`decisions/`](decisions/).
@@ -58,7 +58,6 @@ Overview: `gh issue list`. At the time of writing:
 | # | Topic | Who |
 |---|---|---|
 | #25 | Cancel the old web hosting at Hostpoint (keep domain, DNS, mailboxes) | maintainer |
-| #26 | CI run #19 cancelled: `main` runs must not cancel each other | code |
 | #27 | Mail deliverability: DKIM, then DMARC | maintainer / Marc (DNS) |
 | #28 | Trainings for school year 2028/29 when the holiday plan is out | content |
 | #29 | Complete and check content ("Mitglied werden", document years, …) | association |
@@ -69,10 +68,9 @@ Overview: `gh issue list`. At the time of writing:
 
 ## Next steps
 
-1. Deploy this PR so `https://vrobot.ch/version` exists.
-2. #26 (small CI fix) and #32 (image updates) – keep the platform healthy.
-3. #25 once everything has run stable for a while.
-4. Content issues (#29, #30, #31) with the association.
+1. #32 (container image updates) – keep the platform healthy.
+2. #25 once everything has run stable for a while.
+3. Content issues (#29, #30, #31) with the association.
 
 ## Working agreements (summary)
 
