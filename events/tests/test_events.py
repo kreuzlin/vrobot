@@ -134,7 +134,7 @@ class EventListViewTests(TestCase):
 
 
 class AgendaByMonthTests(TestCase):
-    def test_events_are_grouped_by_month_with_jump_links(self):
+    def test_events_are_grouped_by_month(self):
         Event.objects.create(title="Training A", start=at(2030, 3, 1, 18))
         Event.objects.create(title="Training B", start=at(2030, 3, 8, 18))
         Event.objects.create(title="Training C", start=at(2030, 4, 5, 18))
@@ -144,8 +144,7 @@ class AgendaByMonthTests(TestCase):
         self.assertEqual(
             [len(group["events"]) for group in response.context["months"]], [2, 1]
         )
-        self.assertContains(response, 'href="#monat-2030-03"')
-        self.assertContains(response, 'id="monat-2030-04"')
+        self.assertNotContains(response, 'href="#monat-')
         self.assertInHTML(
             '<h2 class="section-title" id="monat-2030-03-titel">März 2030</h2>',
             content,

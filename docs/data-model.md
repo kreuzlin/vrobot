@@ -45,8 +45,8 @@ Implemented as `Event.objects.upcoming()` (ordered by start) with the Python
 counterpart `Event.is_upcoming()` used in the admin. Nothing is deleted; past
 events remain in the admin (filter "Zeitraum").
 
-Shown on `/agenda/` (all upcoming, grouped by month in Swiss local time with
-jump links to each month; `events.views.group_by_month`) and on the home page
+Shown on `/agenda/` (all upcoming, grouped by month in Swiss local time;
+`events.views.group_by_month`) and on the home page
 (next three).
 
 ## Document – `documents.Document`

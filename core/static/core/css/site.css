@@ -475,35 +475,9 @@ h2 {
 
 /* --- Events ----------------------------------------------------------- */
 
-/* Agenda: jump links to the months, then one section per month. */
-.month-nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0 0 1rem;
-  padding: 0;
-  list-style: none;
-}
-
-.month-nav a {
-  display: block;
-  padding: 0.3rem 0.7rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid var(--grey-light);
-  border-radius: var(--radius);
-}
-
-.month-nav a:hover {
-  color: var(--text);
-  border-color: var(--black);
-}
-
+/* Agenda: one section per month. */
 .event-month {
   margin-top: 2.5rem;
-  /* Keep the month title visible below the top edge when jumping to it. */
-  scroll-margin-top: 1rem;
 }
 
 .event-month .section-title {
