@@ -139,7 +139,11 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      check`, `makemigrations --check`, tests against PostgreSQL 18, then a
      `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
    - push to `main` (i.e. after a merge): the image is pushed to GHCR as
-     `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`.
+     `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`;
+   - concurrency: a new push to a PR cancels its running check; runs on
+     `main` are queued instead, so `latest` is pushed in merge order and each
+     merge gets its `sha-<commit>` image (except a pending run replaced by a
+     newer one when three or more merges happen within minutes).
 2. On the server: `scripts/deploy.sh` pulls the repo and image, runs
    `migrate`, then restarts the containers. Rollback: `IMAGE_TAG=sha-<commit>`.
    Step by step: [`deployment.md`](deployment.md).
