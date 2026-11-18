@@ -3,10 +3,31 @@
 Guidelines for working on this repository (vrobot.ch, website of the
 Verein Robotik Talente). Applies to Claude Code and human contributors.
 
+## Session start
+
+Every new session first works out the current state itself – the
+conversation history of earlier sessions is not available. Run `/start`
+(`.claude/commands/start.md`) or do the same by hand:
+
+1. `git status --short` (uncommitted changes? ask before switching), then
+   `git switch main && git pull`.
+2. Read `docs/STATUS.md` – current state, infrastructure, open issues, next
+   steps.
+3. `git log --oneline -15`
+4. `gh pr list --state open`
+5. `gh issue list --state open`
+6. `gh run list --limit 10` (failed or cancelled runs on `main`?)
+7. Live version: `curl -s https://vrobot.ch/version` and compare with
+   `git rev-parse origin/main`.
+
+Report the result to the maintainer in German before starting new work.
+
 ## Project context
 
-- Rebuild of the association's website. The old PHP site on Hostpoint stays
-  live until the new one is finished. Do not touch the old site or DNS.
+- Rebuild of the association's website, **live on https://vrobot.ch since
+  2026-11-18** (UpCloud server, see `docs/STATUS.md`). The old PHP site on
+  Hostpoint's web hosting is no longer in use. DNS and mail stay at Hostpoint;
+  DNS changes are done by the maintainer.
 - Content site with little interactivity. Content is maintained by association
   members through the Django admin – the admin must be understandable for
   non-technical users (German `verbose_name`s, help texts, sensible list views
@@ -81,6 +102,14 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 - Keep docs in sync: model changes → `docs/data-model.md`, architecture or
   operations changes → `docs/architecture.md`, fundamental decisions → new ADR
   in `docs/decisions/`.
+- **Every PR updates `docs/STATUS.md`**: at least "Last updated", plus what
+  the PR changes (state, open issues, next steps). Work done directly on the
+  server (content, `.env`, deploys) is recorded there too, in the next PR.
+- Open work is tracked as GitHub issues (labels `ops`, `content`, `bug`,
+  `enhancement`); reference them in PRs (`Fixes #N`).
+- After a merge that changes the app, deploy on the server
+  (`scripts/deploy.sh`, see `docs/deployment.md`) once CI has pushed the image
+  for the merge commit, and check `https://vrobot.ch/version`.
 
 ## Secrets
 

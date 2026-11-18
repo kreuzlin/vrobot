@@ -36,6 +36,11 @@ RUN useradd --create-home --uid 1000 app \
     && chown -R app:app /app/media /app/staticfiles
 USER app
 
+# Git commit of this build, shown at /version. Set by CI (build arg); local
+# builds report "dev". Declared late so it does not invalidate earlier layers.
+ARG GIT_COMMIT=dev
+ENV APP_COMMIT=${GIT_COMMIT}
+
 EXPOSE 8000
 
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--access-logfile", "-"]

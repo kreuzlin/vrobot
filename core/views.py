@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
@@ -31,3 +32,11 @@ def markdown_preview(request):
     """
     html = render_markdown(request.POST.get("text", ""))
     return HttpResponse(html, content_type="text/html; charset=utf-8")
+
+
+def version(request):
+    """Commit of the running build, e.g. to compare the live site with main."""
+    commit = settings.APP_COMMIT
+    response = JsonResponse({"commit": commit, "short": commit[:7]})
+    response["Cache-Control"] = "no-store"
+    return response
