@@ -29,6 +29,7 @@ Rationale: see [`docs/decisions/`](docs/decisions/).
 - Documents (statutes, forms, annual reports) with category and year
 - Static pages: About us, Get involved, Contact (form with spam protection)
 - Link to the existing GearsBot emulator
+- Link to the RoboChallenge (robochallenge.ch) in the menu and on the home page
 - All content maintained through the Django admin
 - Proper page titles and meta descriptions
 - Website language: German

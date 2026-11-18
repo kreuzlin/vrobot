@@ -84,6 +84,17 @@ class HomePageTests(TestCase):
         # Navigation, teaser and footer.
         self.assertContains(response, 'href="https://gearsbot.example/"', count=3)
 
+    @override_settings(ROBOCHALLENGE_URL="https://robochallenge.example/")
+    def test_links_to_robochallenge(self):
+        response = self.client.get(reverse("core:home"))
+        # Navigation, home page teaser and footer.
+        self.assertContains(response, 'href="https://robochallenge.example/"', count=3)
+        other_page = self.client.get(reverse("pages:about"))
+        # Navigation and footer on every page.
+        self.assertContains(
+            other_page, 'href="https://robochallenge.example/"', count=2
+        )
+
 
 class ErrorPageTests(TestCase):
     @override_settings(DEBUG=False)

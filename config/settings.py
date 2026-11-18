@@ -141,6 +141,9 @@ SITE_DESCRIPTION = (
     "präsentieren – im Team."
 )
 GEARSBOT_URL = env("GEARSBOT_URL", default="https://gears.aposteriori.com.sg/")
+# Robotics competition co-organised by VRoboT; linked in the main navigation,
+# on the home page and in the footer.
+ROBOCHALLENGE_URL = "https://robochallenge.ch/"
 
 # --- Email ----------------------------------------------------------------
 

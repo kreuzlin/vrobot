@@ -26,5 +26,6 @@ def site(request):
         "site_short_name": settings.SITE_SHORT_NAME,
         "site_description": settings.SITE_DESCRIPTION,
         "gearsbot_url": settings.GEARSBOT_URL,
+        "robochallenge_url": settings.ROBOCHALLENGE_URL,
         "nav_items": nav_items,
     }
