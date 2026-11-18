@@ -42,6 +42,7 @@ services:
       - "443:443/udp"
     environment:
       SITE_ADDRESS: ${SITE_ADDRESS}
+      REDIRECT_ADDRESSES: ${REDIRECT_ADDRESSES}
       ROBOTS_TAG: ${ROBOTS_TAG:-noindex, nofollow}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro

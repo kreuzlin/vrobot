@@ -14,6 +14,9 @@
 		# "noindex, nofollow" by default (test phase on www2); set
 		# ROBOTS_TAG=all in .env when the site goes live.
 		X-Robots-Tag "{$ROBOTS_TAG}"
+		# Browsers use HTTPS only for the next year (not for subdomains,
+		# so mail and other Hostpoint services are unaffected).
+		Strict-Transport-Security "max-age=31536000"
 		X-Content-Type-Options nosniff
 		Referrer-Policy same-origin
 		-Server
@@ -35,4 +38,10 @@
 		output stdout
 		format console
 	}
+}
+
+# Other host names (e.g. www.vrobot.ch, www2.vrobot.ch) redirect permanently
+# to the main address, keeping the path. Caddy gets certificates for them too.
+{$REDIRECT_ADDRESSES} {
+	redir https://{$SITE_ADDRESS}{uri} permanent
 }
