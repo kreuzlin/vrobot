@@ -25,9 +25,10 @@ Report the result to the maintainer in German before starting new work.
 ## Project context
 
 - Rebuild of the association's website, **live on https://vrobot.ch since
-  2026-11-18** (UpCloud server, see `docs/STATUS.md`). The old PHP site on
-  Hostpoint's web hosting is no longer in use. DNS and mail stay at Hostpoint;
-  DNS changes are done by the maintainer.
+  2026-11-18** (UpCloud server, see `docs/STATUS.md`). The old PHP site is no
+  longer served; the Hostpoint web hosting itself stays (used for other
+  purposes – do not touch or cancel it). DNS and mail stay at Hostpoint; DNS
+  changes are done by the maintainer.
 - Content site with little interactivity. Content is maintained by association
   members through the Django admin – the admin must be understandable for
   non-technical users (German `verbose_name`s, help texts, sensible list views
