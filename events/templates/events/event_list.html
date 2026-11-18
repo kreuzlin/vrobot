@@ -3,12 +3,25 @@
 {% block content %}
   {% include "core/_banner.html" with name="agenda" %}
   <h1>Agenda</h1>
-  {% if events %}
-    <ul class="event-list">
-      {% for event in events %}
-        {% include "events/_event.html" %}
-      {% endfor %}
-    </ul>
+  {% if months %}
+    {# Jump links to each month; the list below is grouped by month (events.views.group_by_month). #}
+    <nav class="month-nav" aria-label="Monate">
+      <ul>
+        {% for group in months %}
+          <li><a href="#monat-{{ group.month|date:'Y-m' }}">{{ group.month|date:"M Y" }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    {% for group in months %}
+      <section class="event-month" id="monat-{{ group.month|date:'Y-m' }}" aria-labelledby="monat-{{ group.month|date:'Y-m' }}-titel">
+        <h2 class="section-title" id="monat-{{ group.month|date:'Y-m' }}-titel">{{ group.month|date:"F Y" }}</h2>
+        <ul class="event-list">
+          {% for event in group.events %}
+            {% include "events/_event.html" %}
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
   {% else %}
     <p>Zurzeit sind keine Termine geplant.</p>
   {% endif %}
