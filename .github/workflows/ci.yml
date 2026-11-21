@@ -1,5 +1,7 @@
 # CI: lint and test every pull request and push to main; build the
-# production image for linux/amd64 (ADR 0006) and push it to GHCR from main.
+# production image for linux/amd64 (ADR 0006): on pull requests in parallel
+# with the tests (build only), on main after the tests (build and push to
+# GHCR).
 # A weekly scheduled run rebuilds main with a fresh base image so security
 # fixes in python:3.14-slim reach `latest` between merges (#32).
 
@@ -83,8 +85,41 @@ jobs:
       - name: Tests
         run: uv run python manage.py test
 
+  # Pull requests: build only, to verify the Dockerfile on amd64. Runs at the
+  # same time as the tests (#50); nothing is pushed, so it needs no gate.
+  # The job name is a required check in the ruleset "protect main".
   image:
     name: Build image (linux/amd64)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      # `pull` always fetches the current base image; a new base digest
+      # invalidates the layer cache.
+      - name: Build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          pull: true
+          build-args: GIT_COMMIT=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # main (push, schedule, manual run on main): build and push to GHCR. Waits
+  # for the tests, so an image that reaches the server (automatic deploy,
+  # ADR 0012) has always been tested.
+  publish:
+    name: Publish image (linux/amd64)
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -98,7 +133,6 @@ jobs:
       - uses: docker/setup-buildx-action@v4
 
       - name: Log in to GHCR
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -114,16 +148,12 @@ jobs:
             type=sha,format=long
             type=raw,value=latest,enable={{is_default_branch}}
 
-      # Pull requests: build only, to verify the Dockerfile on amd64.
-      # main (push, schedule, manual run on main): build and push.
-      # `pull` always fetches the current base image; a new base digest
-      # invalidates the layer cache.
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
           context: .
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+          push: true
           pull: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

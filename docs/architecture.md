@@ -143,10 +143,14 @@ development Django serves them (`DEBUG` only); in production Caddy does.
 ## Build and deployment
 
 1. GitHub Actions (`.github/workflows/ci.yml`):
-   - every pull request and push to `main`: Ruff (lint + format), `manage.py
-     check`, `makemigrations --check`, tests against PostgreSQL 18, then a
-     `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
-   - push to `main` (i.e. after a merge): the image is pushed to GHCR as
+   - every pull request and push to `main`: job "Lint and test" (Ruff lint +
+     format, `manage.py check`, `makemigrations --check`, tests against
+     PostgreSQL 18);
+   - pull requests: job "Build image (linux/amd64)" builds the `linux/amd64`
+     image at the same time as the tests, without pushing (verifies the
+     Dockerfile);
+   - push to `main` (i.e. after a merge): job "Publish image (linux/amd64)"
+     waits for the tests, then builds and pushes the image to GHCR as
      `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`;
    - weekly schedule (Mondays 03:30 UTC) and manual runs on `main`: same
      pipeline, rebuilt with a freshly pulled base image so base image
