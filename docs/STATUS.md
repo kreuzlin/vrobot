@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Record the Checkermint post draft in STATUS.md")_
+_Last updated: 2026-11-21 (PR "Record the RoboChallenge post image and issue #47")_
 
 ## Live
 
@@ -55,7 +55,11 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
 - Events on the live site: weekly trainings (Fridays 18:00–19:00, Quader
   Schulhaus, Zimmer 203) until 23.06.2028 following the Chur school holiday
   plan; RoboChallenge 2027 (20.03.2027, Trimmis). Post "RoboChallenge 2027 in
-  Trimmis – jetzt anmelden" published.
+  Trimmis – jetzt anmelden" published; since 2026-11-21 with an image
+  (`posts/2026/robochallenge-2027.jpg`, 1600 × 900): a graphic built by
+  Claude from HTML and text in the colours of robochallenge.ch, with the
+  facts from that site, no photos, no people, without the RoboChallenge logo;
+  approved by the maintainer.
 - Post "Checkermint: unsere neue Trainingsplattform" (slug `checkermint`,
   admin ID 4) created on 2026-11-21 as a **draft** (not published): what
   Checkermint is, how it works, privacy, expectations for participants,
@@ -63,7 +67,7 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   cropped below the header (the Checkermint logo was made with AI tools and
   stays out), no personal data. The maintainer publishes it in the admin
   once Checkermint is productive (it currently runs with demo data only) and
-  sets the publication date then.
+  sets the publication date then (#47).
 
 ## Server changes 2026-11-21
 
@@ -92,6 +96,7 @@ Overview: `gh issue list`. At the time of writing:
 | #31 | Editor accounts for association members | maintainer |
 | #33 | Uptime monitoring, Google Search Console | ops |
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
+| #47 | Publish the Checkermint post when Checkermint goes productive | maintainer (admin) |
 
 ## Next steps
 
@@ -100,8 +105,8 @@ Overview: `gh issue list`. At the time of writing:
 2. Content issues (#29, #30, #31) with the association.
 3. #27 (DKIM/DMARC).
 4. Mondays: review the Dependabot PRs.
-5. Publish the Checkermint post (maintainer, in the admin) when Checkermint
-   goes productive; set the publication date to that day.
+5. #47: publish the Checkermint post (maintainer, in the admin) when
+   Checkermint goes productive; set the publication date to that day.
 
 ## Working agreements (summary)
 
