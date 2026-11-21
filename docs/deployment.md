@@ -156,7 +156,7 @@ docker compose -f compose.prod.yaml up -d --force-recreate caddy  # SITE_ADDRESS
 ## 4. Deploying updates
 
 Deploys are **automatic** (ADR 0012): after a merge, CI pushes a new image
-(`latest` and `sha-<commit>`), and within 5 minutes the cron job
+(`latest` and `sha-<commit>`), and within a minute the cron job
 `scripts/auto-update.sh web` (section 5) notices it and runs
 `scripts/deploy.sh`. Check that the site runs the new commit:
 
@@ -179,8 +179,8 @@ journalctl -t vrobot-update --since "1 week ago"
 ```
 
 A failing deploy (e.g. a migration error) leaves the previous containers
-running and is retried every 5 minutes – check the log if `/version` does not
-show the merged commit after 15 minutes.
+running and is retried every minute – check the log if `/version` does not
+show the merged commit after 5 minutes.
 
 **Rollback** to an earlier build: set `IMAGE_TAG=sha-<commit>` in `.env` and
 run `scripts/deploy.sh` (migrations are not rolled back automatically). While
@@ -218,11 +218,15 @@ afterwards.
 0 2 * * * cd /srv/vrobot && scripts/backup-db.sh
 # Delete old contact messages (data protection), daily 03:00
 0 3 * * * cd /srv/vrobot && docker compose -f compose.prod.yaml exec -T web python manage.py delete_old_contact_messages
-# Automatic deploy of new app images (ADR 0012), every 5 minutes
-*/5 * * * * cd /srv/vrobot && scripts/auto-update.sh web 2>&1 | logger -t vrobot-update
+# Automatic deploy of new app images (ADR 0012), every minute
+* * * * * cd /srv/vrobot && scripts/auto-update.sh web 2>&1 | logger -t vrobot-update
 # All images incl. caddy and postgres, daily 05:30 (after a possible reboot)
 30 5 * * * cd /srv/vrobot && scripts/auto-update.sh 2>&1 | logger -t vrobot-update
 ```
+
+The `web` check runs every minute since 2026-11-21 (#52; ADR 0012 started
+with 5 minutes). GHCR has no pull rate limit, a run without a new image takes
+about a second and prints nothing, and a lock prevents overlapping runs.
 
 The server's time zone is `Europe/Zurich` (`timedatectl set-timezone
 Europe/Zurich`, then `systemctl restart cron`), so cron times are Swiss time.

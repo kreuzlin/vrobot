@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Build the image in parallel with the tests on pull requests")_
+_Last updated: 2026-11-21 (PR "Check for new images every minute")_
 
 ## Live
 
@@ -13,7 +13,7 @@ _Last updated: 2026-11-21 (PR "Build the image in parallel with the tests on pul
   PHP site redirect to the new pages (`core/legacy.py`).
 - Deployed commit: `curl -s https://vrobot.ch/version`, compare with
   `git rev-parse origin/main`. Deploys are automatic since 2026-11-21
-  (ADR 0012): every merge is live within about 5 minutes after CI pushed its
+  (ADR 0012): every merge is live within about a minute after CI pushed its
   image, docs-only merges too. Last manual deploy: `470566a` (2026-11-21);
   first automatic deploy: `d4861bb` (#38), 2026-11-21 20:10.
 - Search engines: indexing allowed (`ROBOTS_TAG=all`), HSTS one year.
@@ -26,9 +26,9 @@ _Last updated: 2026-11-21 (PR "Build the image in parallel with the tests on pul
 | Access | `ssh deploy@212.147.228.149` (key only, no root login, passwordless sudo) |
 | App | `/srv/vrobot` (git checkout), `compose.prod.yaml`: `db` (PostgreSQL 18), `web` (GHCR image, Gunicorn), `caddy` (HTTPS) |
 | Secrets | `/srv/vrobot/.env` on the server only |
-| Deploy | Automatic: cron `scripts/auto-update.sh` (every 5 min for `web`, daily for all images) runs `scripts/deploy.sh`; log `journalctl -t vrobot-update` |
+| Deploy | Automatic: cron `scripts/auto-update.sh` (every minute for `web`, daily for all images) runs `scripts/deploy.sh`; log `journalctl -t vrobot-update` |
 | Backups | cron 02:00 `scripts/backup-db.sh` (14 days in `backups/`), UpCloud backup daily 02:15 UTC |
-| Cron | 02:00 backup, 03:00 `delete_old_contact_messages`, every 5 min / 05:30 `auto-update.sh` |
+| Cron | 02:00 backup, 03:00 `delete_old_contact_messages`, every minute / 05:30 `auto-update.sh` |
 | Mail | Hostpoint SMTP, sender `mail@vrobot.ch`; contact form recipient set in the server `.env` |
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
@@ -76,6 +76,8 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   PBKDF2 (guarded by a test).
 - PRs build the image at the same time as the tests (#50); on `main` the new
   job "Publish image (linux/amd64)" builds and pushes after the tests.
+- The server checks for a new app image every minute instead of every 5
+  minutes (#52); crontab on the server changed after the merge.
 
 ## Server changes 2026-11-21
 
@@ -106,7 +108,6 @@ Overview: `gh issue list`. At the time of writing:
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
 | #47 | Publish the Checkermint post when Checkermint goes productive | maintainer (admin) |
 | #51 | CI: no second test run after a merge (needs the ruleset setting "up to date") | code + maintainer |
-| #52 | Check for new images every minute instead of every 5 minutes | ops |
 
 ## Next steps
 

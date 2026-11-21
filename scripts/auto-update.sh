@@ -1,7 +1,7 @@
 #!/bin/sh
 # Deploy automatically when a newer image is available (ADR 0012). Run from
 # cron on the production server, see docs/deployment.md:
-#   scripts/auto-update.sh web   # every 5 minutes: new app image from CI
+#   scripts/auto-update.sh web   # every minute: new app image from CI
 #   scripts/auto-update.sh       # daily: also caddy and postgres
 # Pulls the given services (default: all), then runs scripts/deploy.sh if a
 # container is missing or runs an image other than the one its tag points to
