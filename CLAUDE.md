@@ -78,8 +78,10 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
     write it as a good commit subject (English, imperative, e.g. "Add events
     calendar").
   - The ruleset also requires the CI checks "Lint and test" and
-    "Build image (linux/amd64)" to pass before a PR can be merged. If a job
-    is renamed in `.github/workflows/ci.yml`, update the ruleset as well.
+    "Build image (linux/amd64)" to pass before a PR can be merged (both run
+    in parallel on PRs). "Publish image (linux/amd64)" runs only on `main`
+    and is not a required check. If a job is renamed in
+    `.github/workflows/ci.yml`, update the ruleset as well.
   - Repository settings: **auto-merge is allowed** and **head branches are
     deleted automatically** after the merge.
 - **Merging (only when asked):**

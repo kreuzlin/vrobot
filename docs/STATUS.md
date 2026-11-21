@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Use a fast password hasher in tests only")_
+_Last updated: 2026-11-21 (PR "Build the image in parallel with the tests on pull requests")_
 
 ## Live
 
@@ -74,6 +74,8 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
 - Tests use a fast password hasher via their own runner (#49): 124 tests took
   4.2 s with PBKDF2, 127 tests now take 1.25 s locally. Production keeps
   PBKDF2 (guarded by a test).
+- PRs build the image at the same time as the tests (#50); on `main` the new
+  job "Publish image (linux/amd64)" builds and pushes after the tests.
 
 ## Server changes 2026-11-21
 
@@ -103,7 +105,6 @@ Overview: `gh issue list`. At the time of writing:
 | #33 | Uptime monitoring, Google Search Console | ops |
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
 | #47 | Publish the Checkermint post when Checkermint goes productive | maintainer (admin) |
-| #50 | CI: build the image in parallel with the tests on PRs | code |
 | #51 | CI: no second test run after a merge (needs the ruleset setting "up to date") | code + maintainer |
 | #52 | Check for new images every minute instead of every 5 minutes | ops |
 
