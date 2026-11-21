@@ -82,6 +82,10 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
     in parallel on PRs). "Publish image (linux/amd64)" runs only on `main`
     and is not a required check. If a job is renamed in
     `.github/workflows/ci.yml`, update the ruleset as well.
+  - The ruleset requires PR branches to be **up to date with `main`**
+    before merging (since 2026-11-21, #51): the tests run only on the PR,
+    not again after the merge. If `main` moved on, update the branch with
+    `gh pr update-branch <N>`; CI runs again and auto-merge then merges.
   - Repository settings: **auto-merge is allowed** and **head branches are
     deleted automatically** after the merge.
 - **Merging (only when asked):**
