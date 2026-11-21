@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Add Dependabot for dependency updates")_
+_Last updated: 2026-11-21 (PR "Record server setup for automatic deploys, skip Python minor updates")_
 
 ## Live
 
@@ -12,9 +12,10 @@ _Last updated: 2026-11-21 (PR "Add Dependabot for dependency updates")_
   `www.vrobot.ch` and `www2.vrobot.ch` redirect there (301); URLs of the old
   PHP site redirect to the new pages (`core/legacy.py`).
 - Deployed commit: `curl -s https://vrobot.ch/version`, compare with
-  `git rev-parse origin/main`. Last manual deploy: `15f67fb` (2026-11-18).
-  From this PR on, deploys are automatic (ADR 0012): every merge is live
-  within about 5 minutes after CI pushed its image, docs-only merges too.
+  `git rev-parse origin/main`. Deploys are automatic since 2026-11-21
+  (ADR 0012): every merge is live within about 5 minutes after CI pushed its
+  image, docs-only merges too. Last manual deploy: `470566a` (2026-11-21);
+  first automatic deploy: `d4861bb` (#38), 2026-11-21 20:10.
 - Search engines: indexing allowed (`ROBOTS_TAG=all`), HSTS one year.
 
 ## Infrastructure
@@ -32,7 +33,7 @@ _Last updated: 2026-11-21 (PR "Add Dependabot for dependency updates")_
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
 | CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
-| Updates | App image rebuilt weekly by CI and deployed automatically; `caddy:2.10` / `postgres:18` patches pulled daily; host: `unattended-upgrades` with reboot at 05:00 when needed |
+| Updates | App image rebuilt weekly by CI and deployed automatically; `caddy:2.11` / `postgres:18` patches pulled daily; host: `unattended-upgrades` with reboot at 05:00 when needed |
 | Dependencies | Dependabot: weekly PRs (uv, GitHub Actions, Dockerfile, Compose images); security updates, secret scanning and push protection enabled |
 
 Runbook: [`deployment.md`](deployment.md). Architecture:
@@ -55,6 +56,20 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   plan; RoboChallenge 2027 (20.03.2027, Trimmis). Post "RoboChallenge 2027 in
   Trimmis – jetzt anmelden" published.
 
+## Server changes 2026-11-21
+
+- Crontab of `deploy`: the two `auto-update.sh` lines from `deployment.md`
+  section 5 added (existing jobs unchanged).
+- `/etc/apt/apt.conf.d/52unattended-upgrades-local`: automatic reboot at
+  05:00 when required.
+- Automatic deploys verified: `d4861bb` (#38) at 20:10 – it also pulled a
+  newer `postgres:18` patch image, the database restarted – and `e2f925a`
+  (#40, #41) at 20:35.
+- Caddy upgraded to 2.11.9 (#41, deployed automatically); Caddyfile validated
+  beforehand, adapted config identical to 2.10. Checked after the deploy:
+  site 200, `www`/`www2`/old-URL redirects, HSTS, `X-Robots-Tag`, no errors
+  in the Caddy log.
+
 ## Open issues
 
 Overview: `gh issue list`. At the time of writing:
@@ -67,14 +82,15 @@ Overview: `gh issue list`. At the time of writing:
 | #30 | Check usage rights of images taken over from the old site | association |
 | #31 | Editor accounts for association members | maintainer |
 | #33 | Uptime monitoring, Google Search Console | ops |
+| #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
 
 ## Next steps
 
-1. After merging #32's PR, on the server: deploy once by hand, install the
-   new crontab lines and the reboot setting (`deployment.md` sections 1 and
-   5), then check that the next merge goes live by itself.
+1. #33 (uptime monitoring): automatic deploys have no alerting yet; a
+   failed deploy only shows in `journalctl -t vrobot-update`.
 2. Content issues (#29, #30, #31) with the association.
-3. #33 (uptime monitoring, Search Console), #27 (DKIM/DMARC).
+3. #27 (DKIM/DMARC).
+4. Mondays: review the Dependabot PRs.
 
 ## Working agreements (summary)
 
