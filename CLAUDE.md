@@ -112,10 +112,10 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
   server (content, `.env`, deploys) is recorded there too, in the next PR.
 - Open work is tracked as GitHub issues (labels `ops`, `content`, `bug`,
   `enhancement`); reference them in PRs (`Fixes #N`).
-- Deploys are automatic (ADR 0012): within about 5 minutes after CI has
+- Deploys are automatic (ADR 0012): within about a minute after CI has
   pushed the image for a merge commit, the server deploys it. After a merge,
   check `https://vrobot.ch/version`; if it still shows the old commit after
-  15 minutes, look at the log (`journalctl -t vrobot-update`, see
+  5 minutes, look at the log (`journalctl -t vrobot-update`, see
   `docs/deployment.md`). `scripts/deploy.sh` can still be run by hand.
 
 ## Secrets
