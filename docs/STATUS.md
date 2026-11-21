@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Link Checkermint in the navigation and footer")_
+_Last updated: 2026-11-21 (PR "Record the Checkermint post draft in STATUS.md")_
 
 ## Live
 
@@ -56,6 +56,14 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   Schulhaus, Zimmer 203) until 23.06.2028 following the Chur school holiday
   plan; RoboChallenge 2027 (20.03.2027, Trimmis). Post "RoboChallenge 2027 in
   Trimmis – jetzt anmelden" published.
+- Post "Checkermint: unsere neue Trainingsplattform" (slug `checkermint`,
+  admin ID 4) created on 2026-11-21 as a **draft** (not published): what
+  Checkermint is, how it works, privacy, expectations for participants,
+  parents and coaches. Image: screenshot of the checkermint.ch home page,
+  cropped below the header (the Checkermint logo was made with AI tools and
+  stays out), no personal data. The maintainer publishes it in the admin
+  once Checkermint is productive (it currently runs with demo data only) and
+  sets the publication date then.
 
 ## Server changes 2026-11-21
 
@@ -92,6 +100,8 @@ Overview: `gh issue list`. At the time of writing:
 2. Content issues (#29, #30, #31) with the association.
 3. #27 (DKIM/DMARC).
 4. Mondays: review the Dependabot PRs.
+5. Publish the Checkermint post (maintainer, in the admin) when Checkermint
+   goes productive; set the publication date to that day.
 
 ## Working agreements (summary)
 
