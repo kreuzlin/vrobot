@@ -157,6 +157,13 @@ development Django serves them (`DEBUG` only); in production Caddy does.
 Locally (Apple Silicon) the image is built natively for `arm64`; the server
 image is only built in CI.
 
+Dependency updates: Dependabot (`.github/dependabot.yml`) opens weekly PRs
+for Python packages (uv, minor/patch grouped; Django stays on 5.2 LTS),
+GitHub Actions, the Dockerfile base images and the Compose images (no
+PostgreSQL major upgrades). Security updates and secret scanning with push
+protection are enabled in the repository settings. The PRs are reviewed and
+merged like any other.
+
 ## Operations
 
 - **Backups:** UpCloud server backups (scheduled snapshots), plus a nightly
