@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Deploy automatically and keep images up to date")_
+_Last updated: 2026-11-21 (PR "Add Dependabot for dependency updates")_
 
 ## Live
 
@@ -33,6 +33,7 @@ _Last updated: 2026-11-21 (PR "Deploy automatically and keep images up to date")
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
 | CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
 | Updates | App image rebuilt weekly by CI and deployed automatically; `caddy:2.10` / `postgres:18` patches pulled daily; host: `unattended-upgrades` with reboot at 05:00 when needed |
+| Dependencies | Dependabot: weekly PRs (uv, GitHub Actions, Dockerfile, Compose images); security updates, secret scanning and push protection enabled |
 
 Runbook: [`deployment.md`](deployment.md). Architecture:
 [`architecture.md`](architecture.md). Decisions: [`decisions/`](decisions/).

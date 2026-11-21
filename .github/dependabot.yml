@@ -1,0 +1,54 @@
+# Dependabot opens pull requests for new versions (#32). The maintainer
+# reviews and merges them like any other PR; CI runs on each.
+# Patch updates of the running images are pulled automatically on the server
+# (ADR 0012); these PRs cover new versions that need a change in the repo.
+
+version: 2
+
+updates:
+  # Python packages (pyproject.toml, uv.lock). Minor and patch updates come
+  # as one weekly PR.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Zurich
+    groups:
+      python:
+        update-types: [minor, patch]
+    ignore:
+      # Django stays on the 5.2 LTS (CLAUDE.md, ADR 0002).
+      - dependency-name: django
+        update-types: [version-update:semver-major, version-update:semver-minor]
+
+  # GitHub Actions used in .github/workflows/.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Zurich
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Base images in the Dockerfile (python, uv).
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Zurich
+
+  # Images in compose.yaml and compose.prod.yaml (postgres, caddy).
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Zurich
+    ignore:
+      # A PostgreSQL major upgrade needs a dump and restore (deployment.md).
+      - dependency-name: postgres
+        update-types: [version-update:semver-major]
