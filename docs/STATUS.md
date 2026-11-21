@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Rebuild the image weekly and pull all images on deploy")_
+_Last updated: 2026-11-21 (PR "Deploy automatically and keep images up to date")_
 
 ## Live
 
@@ -12,8 +12,9 @@ _Last updated: 2026-11-21 (PR "Rebuild the image weekly and pull all images on d
   `www.vrobot.ch` and `www2.vrobot.ch` redirect there (301); URLs of the old
   PHP site redirect to the new pages (`core/legacy.py`).
 - Deployed commit: `curl -s https://vrobot.ch/version`, compare with
-  `git rev-parse origin/main`. Last deploy: `15f67fb` (2026-11-18). Docs- or
-  CI-only changes need no deploy (the live commit then lags behind `main`).
+  `git rev-parse origin/main`. Last manual deploy: `15f67fb` (2026-11-18).
+  From this PR on, deploys are automatic (ADR 0012): every merge is live
+  within about 5 minutes after CI pushed its image, docs-only merges too.
 - Search engines: indexing allowed (`ROBOTS_TAG=all`), HSTS one year.
 
 ## Infrastructure
@@ -24,14 +25,14 @@ _Last updated: 2026-11-21 (PR "Rebuild the image weekly and pull all images on d
 | Access | `ssh deploy@212.147.228.149` (key only, no root login, passwordless sudo) |
 | App | `/srv/vrobot` (git checkout), `compose.prod.yaml`: `db` (PostgreSQL 18), `web` (GHCR image, Gunicorn), `caddy` (HTTPS) |
 | Secrets | `/srv/vrobot/.env` on the server only |
-| Deploy | `scripts/deploy.sh` on the server after CI has pushed the image for the merged commit |
+| Deploy | Automatic: cron `scripts/auto-update.sh` (every 5 min for `web`, daily for all images) runs `scripts/deploy.sh`; log `journalctl -t vrobot-update` |
 | Backups | cron 02:00 `scripts/backup-db.sh` (14 days in `backups/`), UpCloud backup daily 02:15 UTC |
-| Cron | 03:00 `delete_old_contact_messages` |
+| Cron | 02:00 backup, 03:00 `delete_old_contact_messages`, every 5 min / 05:30 `auto-update.sh` |
 | Mail | Hostpoint SMTP, sender `mail@vrobot.ch`; contact form recipient set in the server `.env` |
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
 | CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
-| Image updates | Every Monday (at least monthly) `scripts/deploy.sh` after the scheduled build; it pulls `web`, `caddy` and `db` (routine in `deployment.md`) |
+| Updates | App image rebuilt weekly by CI and deployed automatically; `caddy:2.10` / `postgres:18` patches pulled daily; host: `unattended-upgrades` with reboot at 05:00 when needed |
 
 Runbook: [`deployment.md`](deployment.md). Architecture:
 [`architecture.md`](architecture.md). Decisions: [`decisions/`](decisions/).
@@ -68,8 +69,9 @@ Overview: `gh issue list`. At the time of writing:
 
 ## Next steps
 
-1. After merging #32's PR: deploy once (pulls the current `postgres:18` and
-   `caddy:2.10`), then follow the weekly image update routine.
+1. After merging #32's PR, on the server: deploy once by hand, install the
+   new crontab lines and the reboot setting (`deployment.md` sections 1 and
+   5), then check that the next merge goes live by itself.
 2. Content issues (#29, #30, #31) with the association.
 3. #33 (uptime monitoring, Search Console), #27 (DKIM/DMARC).
 

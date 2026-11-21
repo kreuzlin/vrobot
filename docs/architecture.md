@@ -147,7 +147,9 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      `main` are queued instead, so `latest` is pushed in merge order and each
      merge gets its `sha-<commit>` image (except a pending run replaced by a
      newer one when three or more merges happen within minutes).
-2. On the server: `scripts/deploy.sh` pulls the repo and all images (`web`,
+2. On the server: `scripts/auto-update.sh` (cron, every 5 minutes for `web`,
+   daily for all images) runs `scripts/deploy.sh` when a newer image is
+   available (ADR 0012). `deploy.sh` pulls the repo and all images (`web`,
    `caddy`, `db`), runs `migrate`, then restarts the containers. Rollback:
    `IMAGE_TAG=sha-<commit>`.
    Step by step: [`deployment.md`](deployment.md).
@@ -178,6 +180,9 @@ image is only built in CI.
 - daily: `python manage.py delete_old_contact_messages`
 - nightly: `scripts/backup-db.sh` (`pg_dump`, custom format, kept 14 days in
   `backups/`) before the UpCloud backup (ADR 0008)
+- every 5 minutes / daily: `scripts/auto-update.sh` (automatic deploy,
+  ADR 0012); log in syslog (`journalctl -t vrobot-update`)
+- host: `unattended-upgrades`, automatic reboot at 05:00 when required
 
 Crontab: see [`deployment.md`](deployment.md).
 
