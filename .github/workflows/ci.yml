@@ -1,7 +1,6 @@
-# CI: lint and test every pull request and push to main; build the
-# production image for linux/amd64 (ADR 0006): on pull requests in parallel
-# with the tests (build only), on main after the tests (build and push to
-# GHCR).
+# CI: lint and test every pull request (and the weekly/manual rebuilds);
+# build the production image for linux/amd64 (ADR 0006): on pull requests in
+# parallel with the tests (build only), on main build and push to GHCR.
 # A weekly scheduled run rebuilds main with a fresh base image so security
 # fixes in python:3.14-slim reach `latest` between merges (#32).
 
@@ -33,8 +32,13 @@ env:
   IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
+  # Not on pushes to main (#51): every merge was tested on its pull request,
+  # and the ruleset "protect main" requires PR branches to be up to date
+  # with main, so the tested state is exactly what lands on main. The weekly
+  # scheduled rebuild and manual runs still test (new base image, no PR).
   test:
     name: Lint and test
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -114,12 +118,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # main (push, schedule, manual run on main): build and push to GHCR. Waits
-  # for the tests, so an image that reaches the server (automatic deploy,
-  # ADR 0012) has always been tested.
+  # main (push, schedule, manual run on main): build and push to GHCR. Every
+  # image that reaches the server (automatic deploy, ADR 0012) has been
+  # tested: pushes on their pull request, schedule and manual runs by the
+  # test job of the same run, which this job waits for. A skipped test job
+  # (push) does not block it, a failed or cancelled one does.
   publish:
     name: Publish image (linux/amd64)
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: >-
+      !cancelled()
+      && (needs.test.result == 'success' || needs.test.result == 'skipped')
+      && github.event_name != 'pull_request'
+      && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 20

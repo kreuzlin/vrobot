@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Check for new images every minute")_
+_Last updated: 2026-11-21 (PR "Do not run the tests a second time after a merge")_
 
 ## Live
 
@@ -32,7 +32,7 @@ _Last updated: 2026-11-21 (PR "Check for new images every minute")_
 | Mail | Hostpoint SMTP, sender `mail@vrobot.ch`; contact form recipient set in the server `.env` |
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
-| CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
+| CI | GitHub Actions: lint + tests on PRs (image build in parallel), `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main` without a second test run; PR branches must be up to date; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
 | Updates | App image rebuilt weekly by CI and deployed automatically; `caddy:2.11` / `postgres:18` patches pulled daily; host: `unattended-upgrades` with reboot at 05:00 when needed |
 | Dependencies | Dependabot: weekly PRs (uv, GitHub Actions, Dockerfile, Compose images); security updates, secret scanning and push protection enabled |
 
@@ -78,6 +78,11 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   job "Publish image (linux/amd64)" builds and pushes after the tests.
 - The server checks for a new app image every minute instead of every 5
   minutes (#52); crontab on the server changed after the merge.
+- No second test run after a merge (#51): tests run on the PR (and on the
+  weekly/manual rebuilds), the push to `main` only publishes the image. The
+  maintainer enabled "Require branches to be up to date before merging" in
+  the ruleset "protect main" (2026-11-21); behind PRs are updated with
+  `gh pr update-branch <N>`.
 
 ## Server changes 2026-11-21
 
@@ -107,7 +112,6 @@ Overview: `gh issue list`. At the time of writing:
 | #33 | Uptime monitoring, Google Search Console | ops |
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
 | #47 | Publish the Checkermint post when Checkermint goes productive | maintainer (admin) |
-| #51 | CI: no second test run after a merge (needs the ruleset setting "up to date") | code + maintainer |
 
 ## Next steps
 

@@ -143,17 +143,19 @@ development Django serves them (`DEBUG` only); in production Caddy does.
 ## Build and deployment
 
 1. GitHub Actions (`.github/workflows/ci.yml`):
-   - every pull request and push to `main`: job "Lint and test" (Ruff lint +
-     format, `manage.py check`, `makemigrations --check`, tests against
-     PostgreSQL 18);
+   - every pull request: job "Lint and test" (Ruff lint + format,
+     `manage.py check`, `makemigrations --check`, tests against PostgreSQL
+     18). Not again after the merge: the ruleset requires PR branches to be
+     up to date with `main`, so the tested state is what lands on `main`
+     (#51);
    - pull requests: job "Build image (linux/amd64)" builds the `linux/amd64`
      image at the same time as the tests, without pushing (verifies the
      Dockerfile);
    - push to `main` (i.e. after a merge): job "Publish image (linux/amd64)"
-     waits for the tests, then builds and pushes the image to GHCR as
+     builds and pushes the image to GHCR as
      `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`;
-   - weekly schedule (Mondays 03:30 UTC) and manual runs on `main`: same
-     pipeline, rebuilt with a freshly pulled base image so base image
+   - weekly schedule (Mondays 03:30 UTC) and manual runs on `main`: tests,
+     then publish, rebuilt with a freshly pulled base image so base image
      security fixes reach `latest` between merges;
    - concurrency: a new push to a PR cancels its running check; runs on
      `main` are queued instead, so `latest` is pushed in merge order and each
