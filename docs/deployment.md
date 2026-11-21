@@ -194,15 +194,17 @@ afterwards.
   overwrites `sha-<commit>` of the same commit – same code, newer base); the
   cron job deploys it. The commit at `/version` does not change then. A
   rebuild can also be started by hand: `gh workflow run ci.yml --ref main`.
-- **`caddy:2.10`** and **`postgres:18`**: the daily `scripts/auto-update.sh`
-  run pulls them, so Caddy 2.10.x patches and PostgreSQL 18.x minor updates
+- **`caddy:2.11`** and **`postgres:18`**: the daily `scripts/auto-update.sh`
+  run pulls them, so Caddy 2.11.x patches and PostgreSQL 18.x minor updates
   are applied automatically (PostgreSQL restarts for a few seconds).
 - **Host**: `unattended-upgrades` installs security updates and reboots at
   05:00 when an update needs it (section 1). Docker starts the containers
   again (`restart: unless-stopped`).
-- **Not automatic**, done deliberately in a PR: new minor/major versions
-  (e.g. `caddy:2.11`, Python 3.15, the `uv` version in the `Dockerfile`) and
-  PostgreSQL major upgrades (19), which need a dump and restore (section 6).
+- **Not automatic**: new minor/major versions (e.g. `caddy:2.12`, the `uv`
+  version in the `Dockerfile`) arrive as Dependabot PRs on Mondays and are
+  merged by hand. Python minor versions (#42) and PostgreSQL major upgrades
+  (19, need a dump and restore, section 6) are excluded from Dependabot and
+  done deliberately.
 - GitHub disables scheduled workflows after 60 days without repository
   activity; it then shows a notice in the Actions tab and the workflow has to
   be re-enabled there.

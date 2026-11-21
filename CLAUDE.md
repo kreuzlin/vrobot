@@ -85,6 +85,8 @@ Rationale lives in `docs/decisions/`. To deviate, write a new ADR first.
 - **Merging (only when asked):**
   - Use `gh pr merge <N> --squash --auto`. With green checks GitHub merges
     right away; otherwise the PR is queued and merges once the checks pass.
+    If it fails with "Pull request is in clean status", the PR is mergeable
+    right now: run `gh pr merge <N> --squash` without `--auto`.
   - Then check the result with
     `gh pr view <N> --json state,mergedAt,autoMergeRequest` **before**
     waiting for CI or deploying: `state` is `MERGED`, or `autoMergeRequest`
