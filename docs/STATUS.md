@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Do not run the tests a second time after a merge")_
+_Last updated: 2026-11-21 (PR "Record the published Checkermint post")_
 
 ## Live
 
@@ -61,13 +61,12 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   facts from that site, no photos, no people, without the RoboChallenge logo;
   approved by the maintainer.
 - Post "Checkermint: unsere neue Trainingsplattform" (slug `checkermint`,
-  admin ID 4) created on 2026-11-21 as a **draft** (not published): what
-  Checkermint is, how it works, privacy, expectations for participants,
-  parents and coaches. Image: screenshot of the checkermint.ch home page,
-  cropped below the header (the Checkermint logo was made with AI tools and
-  stays out), no personal data. The maintainer publishes it in the admin
-  once Checkermint is productive (it currently runs with demo data only) and
-  sets the publication date then (#47).
+  admin ID 4): what Checkermint is, how it works, privacy, expectations for
+  participants, parents and coaches. Image: screenshot of the checkermint.ch
+  home page, cropped below the header (the Checkermint logo was made with AI
+  tools and stays out), no personal data. Created as a draft, **published
+  2026-11-21 21:41** at the maintainer's request (#47), although Checkermint
+  itself still ran with demo data then.
 
 ## CI and test speed (2026-11-21)
 
@@ -109,19 +108,17 @@ Overview: `gh issue list`. At the time of writing:
 | #29 | Complete and check content ("Mitglied werden", document years, …) | association |
 | #30 | Check usage rights of images taken over from the old site | association |
 | #31 | Editor accounts for association members | maintainer |
-| #33 | Uptime monitoring, Google Search Console | ops |
+| #33 | Uptime monitoring, Google Search Console (deferred by the maintainer 2026-11-21) | ops |
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
-| #47 | Publish the Checkermint post when Checkermint goes productive | maintainer (admin) |
 
 ## Next steps
 
-1. #33 (uptime monitoring): automatic deploys have no alerting yet; a
-   failed deploy only shows in `journalctl -t vrobot-update`.
-2. Content issues (#29, #30, #31) with the association.
-3. #27 (DKIM/DMARC).
-4. Mondays: review the Dependabot PRs.
-5. #47: publish the Checkermint post (maintainer, in the admin) when
-   Checkermint goes productive; set the publication date to that day.
+1. Content issues (#29, #30, #31) with the association.
+2. #27 (DKIM/DMARC).
+3. Mondays: review the Dependabot PRs.
+4. Later: #33 (uptime monitoring), deferred by the maintainer on 2026-11-21.
+   Until then a failed automatic deploy only shows in
+   `journalctl -t vrobot-update`.
 
 ## Working agreements (summary)
 
