@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Record the rollback test and the SMTP login problem")_
+_Last updated: 2026-11-21 (PR "Record the decision to stay on Python 3.14")_
 
 ## Live
 
@@ -118,6 +118,15 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   site 200, `www`/`www2`/old-URL redirects, HSTS, `X-Robots-Tag`, no errors
   in the Caddy log.
 
+## Python version (2026-11-21)
+
+- Production runs Python 3.14 (3.14.10 live) with Django 5.2.19. We stay
+  on 3.14 until the Django LTS officially supports 3.15 (ADR 0013): Django
+  5.2.19 declares 3.10–3.14, only Django 6.1 declares 3.15. Decide at the
+  latest before 3.14 leaves bugfix support (autumn 2027).
+- Dependabot ignores Python minor/major updates of the base image; 3.14
+  patches and Debian fixes come with the weekly rebuild of `3.14-slim`.
+
 ## Open issues
 
 Overview: `gh issue list`. At the time of writing:
@@ -130,7 +139,7 @@ Overview: `gh issue list`. At the time of writing:
 | #30 | Check usage rights of images taken over from the old site | association |
 | #31 | Editor accounts for association members | maintainer |
 | #33 | Uptime monitoring, Google Search Console (deferred by the maintainer 2026-11-21) | ops |
-| #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
+| #42 | Python 3.15 once the Django LTS supports it (ADR 0013; tests already pass) | code, later |
 
 ## Next steps
 
