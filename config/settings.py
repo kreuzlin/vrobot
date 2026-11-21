@@ -144,6 +144,9 @@ GEARSBOT_URL = env("GEARSBOT_URL", default="https://gears.aposteriori.com.sg/")
 # Robotics competition co-organised by VRoboT; linked in the main navigation,
 # on the home page and in the footer.
 ROBOCHALLENGE_URL = "https://robochallenge.ch/"
+# Platform for tasks, feedback and points used in the trainings; linked in the
+# main navigation and in the footer.
+CHECKERMINT_URL = "https://checkermint.ch/"
 # Git commit of the running image (Dockerfile build arg GIT_COMMIT, set by CI),
 # shown at /version. "dev" for local builds.
 APP_COMMIT = env("APP_COMMIT", default="dev")

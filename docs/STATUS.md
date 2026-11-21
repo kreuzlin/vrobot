@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Record server setup for automatic deploys, skip Python minor updates")_
+_Last updated: 2026-11-21 (PR "Link Checkermint in the navigation and footer")_
 
 ## Live
 
@@ -43,7 +43,8 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
 
 - Django 5.2 site with posts, events (past ones hidden, grouped by month),
   documents, fixed pages (Über uns, Mitmachen, Kontakt), contact form with
-  spam protection and email, links to GearsBot and the RoboChallenge.
+  spam protection and email, links to GearsBot, the RoboChallenge and
+  Checkermint.
 - Design from the logo (colours, header, mobile menu, footer), images from the
   old site (home photo, page banners, "Mitmachen" topics).
 - Admin for non-technical editors: group "Redaktion", Markdown editor with a
