@@ -20,3 +20,4 @@ Template: [`0000-template.md`](0000-template.md)
 | 0010 | [Send email via Hostpoint SMTP](0010-email-via-hostpoint-smtp.md)     | accepted |
 | 0011 | [Spam protection without third-party services](0011-spam-protection-without-third-parties.md) | accepted |
 | 0012 | [Automatic deployment on the server](0012-automatic-deployment.md) | accepted |
+| 0013 | [Stay on Python 3.14 until the Django LTS supports 3.15](0013-stay-on-python-3-14.md) | accepted |

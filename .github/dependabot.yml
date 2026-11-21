@@ -41,8 +41,9 @@ updates:
       day: monday
       timezone: Europe/Zurich
     ignore:
-      # New Python versions only once Django 5.2 supports them (#42). Patch
-      # releases arrive through the weekly rebuild of the 3.x-slim tag.
+      # New Python versions only once the Django LTS supports them (ADR 0013,
+      # #42). Patch releases arrive through the weekly rebuild of the
+      # 3.x-slim tag.
       - dependency-name: python
         update-types: [version-update:semver-major, version-update:semver-minor]
 
