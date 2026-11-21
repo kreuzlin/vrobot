@@ -140,12 +140,18 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
    - push to `main` (i.e. after a merge): the image is pushed to GHCR as
      `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`;
+   - weekly schedule (Mondays 03:30 UTC) and manual runs on `main`: same
+     pipeline, rebuilt with a freshly pulled base image so base image
+     security fixes reach `latest` between merges;
    - concurrency: a new push to a PR cancels its running check; runs on
      `main` are queued instead, so `latest` is pushed in merge order and each
      merge gets its `sha-<commit>` image (except a pending run replaced by a
      newer one when three or more merges happen within minutes).
-2. On the server: `scripts/deploy.sh` pulls the repo and image, runs
-   `migrate`, then restarts the containers. Rollback: `IMAGE_TAG=sha-<commit>`.
+2. On the server: `scripts/auto-update.sh` (cron, every 5 minutes for `web`,
+   daily for all images) runs `scripts/deploy.sh` when a newer image is
+   available (ADR 0012). `deploy.sh` pulls the repo and all images (`web`,
+   `caddy`, `db`), runs `migrate`, then restarts the containers. Rollback:
+   `IMAGE_TAG=sha-<commit>`.
    Step by step: [`deployment.md`](deployment.md).
 
 Locally (Apple Silicon) the image is built natively for `arm64`; the server
@@ -174,6 +180,9 @@ image is only built in CI.
 - daily: `python manage.py delete_old_contact_messages`
 - nightly: `scripts/backup-db.sh` (`pg_dump`, custom format, kept 14 days in
   `backups/`) before the UpCloud backup (ADR 0008)
+- every 5 minutes / daily: `scripts/auto-update.sh` (automatic deploy,
+  ADR 0012); log in syslog (`journalctl -t vrobot-update`)
+- host: `unattended-upgrades`, automatic reboot at 05:00 when required
 
 Crontab: see [`deployment.md`](deployment.md).
 

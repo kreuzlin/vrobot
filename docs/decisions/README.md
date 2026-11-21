@@ -19,3 +19,4 @@ Template: [`0000-template.md`](0000-template.md)
 | 0009 | [Markdown for rich text content](0009-markdown-for-content.md)        | accepted |
 | 0010 | [Send email via Hostpoint SMTP](0010-email-via-hostpoint-smtp.md)     | accepted |
 | 0011 | [Spam protection without third-party services](0011-spam-protection-without-third-parties.md) | accepted |
+| 0012 | [Automatic deployment on the server](0012-automatic-deployment.md) | accepted |

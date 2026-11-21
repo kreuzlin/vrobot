@@ -22,9 +22,12 @@ except for switching to `main` and pulling.
 7. Live site:
    - `curl -s https://vrobot.ch/version`
    - `git rev-parse origin/main`
-   - Compare: is the deployed commit the head of `main`? If not, list the
-     commits not yet deployed (`git log --oneline <deployed>..origin/main`)
-     and check that CI pushed an image for `origin/main` (step 6).
+   - Compare: is the deployed commit the head of `main`? Deploys are
+     automatic (ADR 0012), so a difference is only expected while CI for the
+     newest merge is still running. Otherwise list the commits not yet
+     deployed (`git log --oneline <deployed>..origin/main`), check that CI
+     pushed an image for `origin/main` (step 6) and report it as a problem
+     with the automatic deploy.
    - `curl -s -o /dev/null -w "%{http_code}\n" https://vrobot.ch/`
 
 Then summarise in German, short:

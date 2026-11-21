@@ -22,6 +22,12 @@ apt update && apt upgrade -y
 apt install -y ufw unattended-upgrades git ca-certificates curl
 # reboot if /var/run/reboot-required exists
 
+# Reboot automatically at 05:00 when an update requires it (kernel, libc)
+cat > /etc/apt/apt.conf.d/52unattended-upgrades-local <<'EOF'
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "05:00";
+EOF
+
 # Swap as a safety net (the server has ~2 GB RAM)
 fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
 echo "/swapfile none swap sw 0 0" >> /etc/fstab
@@ -149,19 +155,10 @@ docker compose -f compose.prod.yaml up -d --force-recreate caddy  # SITE_ADDRESS
 
 ## 4. Deploying updates
 
-After a PR is merged, CI pushes a new image (`latest` and `sha-<commit>`).
-On the server:
-
-```bash
-cd /srv/vrobot && scripts/deploy.sh
-```
-
-The script pulls the repo and images, runs migrations, restarts the
-containers and removes old images.
-
-Wait until the CI run for the merge commit has pushed the image
-(`gh run list --branch main --limit 1`), otherwise `latest` is still the
-previous build. Afterwards check that the site runs the new commit:
+Deploys are **automatic** (ADR 0012): after a merge, CI pushes a new image
+(`latest` and `sha-<commit>`), and within 5 minutes the cron job
+`scripts/auto-update.sh web` (section 5) notices it and runs
+`scripts/deploy.sh`. Check that the site runs the new commit:
 
 ```bash
 curl -s https://vrobot.ch/version   # {"commit": "<sha>", "short": "<sha7>"}
@@ -170,25 +167,65 @@ curl -s https://vrobot.ch/version   # {"commit": "<sha>", "short": "<sha7>"}
 The commit is baked into the image by CI (`GIT_COMMIT` build arg →
 `APP_COMMIT`); locally built images report `dev`.
 
+`scripts/deploy.sh` pulls the repo and all images (`web`, `caddy`, `db`),
+runs migrations, restarts the containers whose image changed and removes old
+images. It can still be run by hand (`cd /srv/vrobot && scripts/deploy.sh`),
+e.g. after changing `.env`; a lock makes sure only one deploy runs at a time.
+
+Log of the automatic deploys (silent when nothing changed):
+
+```bash
+journalctl -t vrobot-update --since "1 week ago"
+```
+
+A failing deploy (e.g. a migration error) leaves the previous containers
+running and is retried every 5 minutes – check the log if `/version` does not
+show the merged commit after 15 minutes.
+
 **Rollback** to an earlier build: set `IMAGE_TAG=sha-<commit>` in `.env` and
-run `scripts/deploy.sh` again (set it back to `latest` afterwards). Migrations
-are not rolled back automatically.
+run `scripts/deploy.sh` (migrations are not rolled back automatically). While
+the tag is pinned, automatic app updates stop; set it back to `latest`
+afterwards.
+
+### Keeping images and the host up to date
+
+- **App image** (`python:3.14-slim` base): CI rebuilds `main` every Monday
+  03:30 UTC with a freshly pulled base image and pushes `latest` (and
+  overwrites `sha-<commit>` of the same commit – same code, newer base); the
+  cron job deploys it. The commit at `/version` does not change then. A
+  rebuild can also be started by hand: `gh workflow run ci.yml --ref main`.
+- **`caddy:2.10`** and **`postgres:18`**: the daily `scripts/auto-update.sh`
+  run pulls them, so Caddy 2.10.x patches and PostgreSQL 18.x minor updates
+  are applied automatically (PostgreSQL restarts for a few seconds).
+- **Host**: `unattended-upgrades` installs security updates and reboots at
+  05:00 when an update needs it (section 1). Docker starts the containers
+  again (`restart: unless-stopped`).
+- **Not automatic**, done deliberately in a PR: new minor/major versions
+  (e.g. `caddy:2.11`, Python 3.15, the `uv` version in the `Dockerfile`) and
+  PostgreSQL major upgrades (19), which need a dump and restore (section 6).
+- GitHub disables scheduled workflows after 60 days without repository
+  activity; it then shows a notice in the Actions tab and the workflow has to
+  be re-enabled there.
 
 ## 5. Scheduled jobs
 
 `crontab -e` as `deploy`:
 
 ```cron
-# Delete old contact messages (data protection), daily 03:00
-0 3 * * * cd /srv/vrobot && docker compose -f compose.prod.yaml exec -T web python manage.py delete_old_contact_messages
 # Database dump before the UpCloud backup, nightly 02:00
 0 2 * * * cd /srv/vrobot && scripts/backup-db.sh
+# Delete old contact messages (data protection), daily 03:00
+0 3 * * * cd /srv/vrobot && docker compose -f compose.prod.yaml exec -T web python manage.py delete_old_contact_messages
+# Automatic deploy of new app images (ADR 0012), every 5 minutes
+*/5 * * * * cd /srv/vrobot && scripts/auto-update.sh web 2>&1 | logger -t vrobot-update
+# All images incl. caddy and postgres, daily 05:30 (after a possible reboot)
+30 5 * * * cd /srv/vrobot && scripts/auto-update.sh 2>&1 | logger -t vrobot-update
 ```
 
 The server's time zone is `Europe/Zurich` (`timedatectl set-timezone
 Europe/Zurich`, then `systemctl restart cron`), so cron times are Swiss time.
 The UpCloud backup runs daily at 02:15 UTC (03:15/04:15 Swiss time), i.e.
-after the dump (ADR 0008).
+after the dump (ADR 0008) and before the automatic reboot at 05:00.
 
 ## 6. Backups and restore
 
