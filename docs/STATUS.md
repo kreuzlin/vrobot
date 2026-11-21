@@ -96,9 +96,12 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   after 60 s, previous image (`edf111e`) restarted, site OK again; the site
   answered 502 for about 61 s (22:05:47–22:06:48). Normal state restored
   with `scripts/deploy.sh`, test image removed.
-- **The alert mail was not sent:** Hostpoint rejects the SMTP login (535),
-  which also breaks the contact form mail (#61, maintainer). The rollback
-  itself does not depend on mail.
+- The alert mail was not sent during the test: Hostpoint rejected the SMTP
+  login (535), which also broke the contact form mail since 2026-11-18 at
+  the latest (#61). Fixed the same evening: current password of
+  `mail@vrobot.ch` set in the server `.env`, web recreated, test alert via
+  `notify_deploy` received by the maintainer. Recommended: rotate that
+  password at Hostpoint at some point and enter it directly on the server.
 - Server `.env`: `DEPLOY_ALERT_RECIPIENTS` added (maintainer's address).
 
 ## Server changes 2026-11-21
@@ -126,19 +129,17 @@ Overview: `gh issue list`. At the time of writing:
 | #29 | Complete and check content ("Mitglied werden", document years, …) | association |
 | #30 | Check usage rights of images taken over from the old site | association |
 | #31 | Editor accounts for association members | maintainer |
-| #61 | **SMTP login fails: contact form and deploy alerts send no mail** | maintainer (password in `.env`) |
 | #33 | Uptime monitoring, Google Search Console (deferred by the maintainer 2026-11-21) | ops |
 | #42 | Python 3.15 once Django 5.2 supports it (tests already pass) | code, later |
 
 ## Next steps
 
-1. **#61: fix the SMTP password in the server `.env`** (contact form and
-   deploy alerts cannot send mail), then `sendtestemail`.
-2. Content issues (#29, #30, #31) with the association.
-3. #27 (DKIM/DMARC).
-4. Mondays: review the Dependabot PRs.
-5. Later: #33 (uptime monitoring), deferred by the maintainer on 2026-11-21.
-   Failed deploys are rolled back and mailed (#59, once #61 is fixed);
+1. Content issues (#29, #30, #31) with the association.
+2. #27 (DKIM/DMARC).
+3. Mondays: review the Dependabot PRs; check the first weekly rebuild
+   (Monday 04:30) and its automatic deploy.
+4. Later: #33 (uptime monitoring), deferred by the maintainer on 2026-11-21.
+   Failed deploys are rolled back and mailed (#59);
    outages that are not caused by a deploy still go unnoticed.
 
 ## Working agreements (summary)
