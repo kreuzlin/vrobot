@@ -5,7 +5,8 @@
 #   scripts/auto-update.sh       # daily: also caddy and postgres
 # Pulls the given services (default: all), then runs scripts/deploy.sh if a
 # container is missing or runs an image other than the one its tag points to
-# now. Prints nothing when everything is up to date.
+# now, unless that image is listed in .deploy-failed (rolled back before).
+# Prints nothing when everything is up to date.
 set -eu
 # The whole script is one block, so sh has read all of it before
 # `git pull` in deploy.sh can replace the file.
@@ -36,8 +37,14 @@ for container in $(compose ps -q); do
   read -r ref current <<EOF
 $(docker inspect -f '{{.Config.Image}} {{.Image}}' "$container")
 EOF
-  [ "$(docker image inspect -f '{{.Id}}' "$ref")" = "$current" ] ||
-    reason="$reason $ref:new-image"
+  latest=$(docker image inspect -f '{{.Id}}' "$ref")
+  [ "$latest" != "$current" ] || continue
+  # An image that failed and was rolled back (scripts/deploy.sh) is not
+  # retried; the next new image from CI is.
+  if [ -f .deploy-failed ] && grep -qx "$ref $latest" .deploy-failed; then
+    continue
+  fi
+  reason="$reason $ref:new-image"
 done
 
 [ -n "$reason" ] || exit 0

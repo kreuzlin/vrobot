@@ -173,6 +173,9 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Recipients of contact form messages (comma-separated in the environment).
 CONTACT_RECIPIENTS = env.list("CONTACT_RECIPIENTS", default=[])
+# Who gets mail when a deploy fails or is rolled back (scripts/deploy.sh,
+# `manage.py notify_deploy`).
+DEPLOY_ALERT_RECIPIENTS = env.list("DEPLOY_ALERT_RECIPIENTS", default=[])
 # Contact messages older than this are deleted by
 # `manage.py delete_old_contact_messages` (data protection).
 CONTACT_MESSAGE_RETENTION_DAYS = env.int("CONTACT_MESSAGE_RETENTION_DAYS", default=365)

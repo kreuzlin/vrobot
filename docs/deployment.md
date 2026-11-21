@@ -167,10 +167,20 @@ curl -s https://vrobot.ch/version   # {"commit": "<sha>", "short": "<sha7>"}
 The commit is baked into the image by CI (`GIT_COMMIT` build arg →
 `APP_COMMIT`); locally built images report `dev`.
 
-`scripts/deploy.sh` pulls the repo and all images (`web`, `caddy`, `db`),
-runs migrations, restarts the containers whose image changed and removes old
-images. It can still be run by hand (`cd /srv/vrobot && scripts/deploy.sh`),
-e.g. after changing `.env`; a lock makes sure only one deploy runs at a time.
+`scripts/deploy.sh`:
+
+1. remembers the image of every running container (local tags
+   `vrobot-previous:web`, `…:caddy`, `…:db`; list in `.deploy-previous`),
+2. pulls the repo and all images, runs migrations and starts the containers
+   whose image changed,
+3. checks the site through Caddy on the server itself: `/version` must report
+   the commit of the new web image and the home page must answer (up to
+   60 s),
+4. on success removes old images; if a step after the pull fails (database
+   start, migration, container start, site check) it **rolls back** (below).
+
+It can still be run by hand (`cd /srv/vrobot && scripts/deploy.sh`), e.g.
+after changing `.env`; a lock makes sure only one deploy runs at a time.
 
 Log of the automatic deploys (silent when nothing changed):
 
@@ -178,14 +188,59 @@ Log of the automatic deploys (silent when nothing changed):
 journalctl -t vrobot-update --since "1 week ago"
 ```
 
-A failing deploy (e.g. a migration error) leaves the previous containers
-running and is retried every minute – check the log if `/version` does not
-show the merged commit after 5 minutes.
+### Automatic rollback and alert mail
 
-**Rollback** to an earlier build: set `IMAGE_TAG=sha-<commit>` in `.env` and
-run `scripts/deploy.sh` (migrations are not rolled back automatically). While
-the tag is pinned, automatic app updates stop; set it back to `latest`
-afterwards.
+If a deploy fails after the pull, `scripts/deploy.sh`:
+
+- starts the remembered images again (exactly the state that ran before,
+  not another commit) and checks the site again,
+- writes the images that failed to `.deploy-failed`; `auto-update.sh` does
+  not retry them, the next new image from CI is deployed normally,
+- mails `DEPLOY_ALERT_RECIPIENTS` (`.env`) via Hostpoint SMTP
+  (`manage.py notify_deploy`, sent from the running web container):
+  - "Deploy fehlgeschlagen, alte Version wiederhergestellt": the old version
+    runs again, the site is up;
+  - "DRINGEND: Deploy fehlgeschlagen, Rollback hat nicht geklappt": the site
+    is still down, act now (`docker compose -f compose.prod.yaml ps`, logs);
+  - "Deploy fehlgeschlagen: git pull": nothing changed, the checkout in
+    `/srv/vrobot` has local changes.
+
+  The same failure is mailed only once; a successful deploy clears
+  `.deploy-failed` and the mail marker `.deploy-alert`. A failed image pull
+  changes nothing and is usually temporary: it is only logged.
+
+Limits: migrations are not rolled back (the old code then runs against the
+new schema; migrations should stay backwards compatible). Changes from
+`git pull` (e.g. `compose.prod.yaml`, Caddyfile) are not reverted either.
+
+After a rollback: fix the cause in a PR; its new image is deployed
+automatically. To retry the same image by hand, run `scripts/deploy.sh`
+(manual runs ignore `.deploy-failed`).
+
+**Rollback test** (done 2026-11-21, repeat after changes to `deploy.sh`):
+build a deliberately broken image from the running one and deploy it
+without pulling:
+
+```bash
+cd /srv/vrobot
+printf 'FROM ghcr.io/kreuzlin/vrobot:latest\nCMD ["false"]\n' |
+  docker build -t ghcr.io/kreuzlin/vrobot:rollback-test -
+IMAGE_TAG=rollback-test DEPLOY_NO_PULL=1 scripts/deploy.sh   # ~1–2 min
+curl -s https://vrobot.ch/version     # previous commit, site up
+cat .deploy-failed                    # the broken image
+scripts/deploy.sh                     # back to the normal state (latest)
+docker rmi ghcr.io/kreuzlin/vrobot:rollback-test
+```
+
+The site is down for up to about 60 s during the test (failed check).
+Expected: alert mail "alte Version wiederhergestellt".
+
+**Rollback by hand** to an earlier build: set `IMAGE_TAG=sha-<commit>` in
+`.env` and run `scripts/deploy.sh` (migrations are not rolled back). While the
+tag is pinned, automatic app updates stop; set it back to `latest`
+afterwards. Note: the weekly rebuild overwrites `sha-<commit>` of the
+current commit with a newer base image; the automatic rollback uses the
+locally remembered image instead.
 
 ### Keeping images and the host up to date
 

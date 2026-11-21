@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Record the published Checkermint post")_
+_Last updated: 2026-11-21 (PR "Roll back failed deploys automatically and mail an alert")_
 
 ## Live
 
@@ -82,6 +82,15 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   maintainer enabled "Require branches to be up to date before merging" in
   the ruleset "protect main" (2026-11-21); behind PRs are updated with
   `gh pr update-branch <N>`.
+
+## Deploy safety (2026-11-21)
+
+- `scripts/deploy.sh` checks `/version` and the home page after every deploy
+  and rolls back to the previously running images (`vrobot-previous:*`) if
+  a step fails; failed images are not retried (`.deploy-failed`). Alert mail
+  to `DEPLOY_ALERT_RECIPIENTS` via Hostpoint SMTP (`notify_deploy`). Tested
+  locally (broken image, repeated failure, failed migration, rollback target
+  broken too) and on the server (see below).
 
 ## Server changes 2026-11-21
 
