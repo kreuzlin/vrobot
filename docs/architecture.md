@@ -118,6 +118,10 @@ development Django serves them (`DEBUG` only); in production Caddy does.
   (`SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `DATABASE_URL`, email credentials …).
 - `.env.example` documents every variable.
 - A single settings module; dev/prod differences only via environment variables.
+- Passwords use Django's default hasher (PBKDF2). Tests run with their own
+  runner (`config/test_runner.py`) that switches to the fast MD5 hasher for the
+  test run only; `config/tests/test_password_hashers.py` fails if the settings
+  module ever lists a weak hasher or drops PBKDF2 as the default.
 
 ## Docker image
 
