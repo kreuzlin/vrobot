@@ -41,6 +41,10 @@ has its own website; we link it (`ROBOCHALLENGE_URL`) in the main navigation,
 the footer and a red teaser on the home page. The teaser has no dates so it
 does not go stale; current dates go into posts and events.
 
+Checkermint (platform for tasks, feedback and points used in the trainings)
+is linked the same way (`CHECKERMINT_URL`) in the main navigation and the
+footer, without a home page teaser.
+
 ### `core` in detail
 
 - `base.html`: layout, header with main navigation, footer, SEO tags

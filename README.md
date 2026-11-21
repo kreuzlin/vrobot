@@ -30,6 +30,8 @@ Rationale: see [`docs/decisions/`](docs/decisions/).
 - Static pages: About us, Get involved, Contact (form with spam protection)
 - Link to the existing GearsBot emulator
 - Link to the RoboChallenge (robochallenge.ch) in the menu and on the home page
+- Link to Checkermint (checkermint.ch, tasks and feedback in the trainings) in
+  the menu and footer
 - All content maintained through the Django admin
 - Proper page titles and meta descriptions
 - Website language: German

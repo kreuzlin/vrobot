@@ -1,5 +1,7 @@
 """Tests for the base layout, navigation and SEO tags."""
 
+import re
+
 from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -94,6 +96,35 @@ class HomePageTests(TestCase):
         self.assertContains(
             other_page, 'href="https://robochallenge.example/"', count=2
         )
+
+    @override_settings(CHECKERMINT_URL="https://checkermint.example/")
+    def test_links_to_checkermint(self):
+        for url_name in ["core:home", "pages:about"]:
+            with self.subTest(url_name):
+                response = self.client.get(reverse(url_name))
+                # Navigation and footer, both open in a new tab with a hint
+                # for screen readers.
+                links = re.findall(
+                    r'<a [^>]*href="https://checkermint\.example/"[^>]*>(.*?)</a>',
+                    response.content.decode(),
+                )
+                self.assertEqual(len(links), 2)
+                for link in links:
+                    self.assertIn("Checkermint", link)
+                    self.assertIn(
+                        '<span class="visually-hidden"> (öffnet in neuem Tab)</span>',
+                        link,
+                    )
+                self.assertContains(
+                    response,
+                    'href="https://checkermint.example/" rel="noopener" '
+                    'target="_blank"',
+                    count=2,
+                )
+
+    def test_checkermint_url_default(self):
+        response = self.client.get(reverse("core:home"))
+        self.assertContains(response, 'href="https://checkermint.ch/"', count=2)
 
 
 class ErrorPageTests(TestCase):
