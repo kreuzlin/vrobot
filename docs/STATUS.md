@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-21 (PR "Roll back failed deploys automatically and mail an alert")_
+_Last updated: 2026-11-21 (PR "Record the rollback test and the SMTP login problem")_
 
 ## Live
 
@@ -90,7 +90,19 @@ Runbook: [`deployment.md`](deployment.md). Architecture:
   a step fails; failed images are not retried (`.deploy-failed`). Alert mail
   to `DEPLOY_ALERT_RECIPIENTS` via Hostpoint SMTP (`notify_deploy`). Tested
   locally (broken image, repeated failure, failed migration, rollback target
-  broken too) and on the server (see below).
+  broken too) and on the server:
+- Rollback test on the server 2026-11-21 22:05 (procedure in
+  `deployment.md`): broken image `rollback-test` deployed, check failed
+  after 60 s, previous image (`edf111e`) restarted, site OK again; the site
+  answered 502 for about 61 s (22:05:47–22:06:48). Normal state restored
+  with `scripts/deploy.sh`, test image removed.
+- The alert mail was not sent during the test: Hostpoint rejected the SMTP
+  login (535), which also broke the contact form mail since 2026-11-18 at
+  the latest (#61). Fixed the same evening: current password of
+  `mail@vrobot.ch` set in the server `.env`, web recreated, test alert via
+  `notify_deploy` received by the maintainer. Recommended: rotate that
+  password at Hostpoint at some point and enter it directly on the server.
+- Server `.env`: `DEPLOY_ALERT_RECIPIENTS` added (maintainer's address).
 
 ## Server changes 2026-11-21
 
@@ -124,10 +136,11 @@ Overview: `gh issue list`. At the time of writing:
 
 1. Content issues (#29, #30, #31) with the association.
 2. #27 (DKIM/DMARC).
-3. Mondays: review the Dependabot PRs.
+3. Mondays: review the Dependabot PRs; check the first weekly rebuild
+   (Monday 04:30) and its automatic deploy.
 4. Later: #33 (uptime monitoring), deferred by the maintainer on 2026-11-21.
-   Until then a failed automatic deploy only shows in
-   `journalctl -t vrobot-update`.
+   Failed deploys are rolled back and mailed (#59);
+   outages that are not caused by a deploy still go unnoticed.
 
 ## Working agreements (summary)
 
