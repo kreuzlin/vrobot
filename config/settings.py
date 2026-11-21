@@ -98,6 +98,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Passwords: Django's default hashers (PBKDF2). Tests use a fast hasher via
+# their own runner (config/test_runner.py), never via this module.
+TEST_RUNNER = "config.test_runner.TestRunner"
+
 # --- Internationalisation -------------------------------------------------
 
 # The website is German only (Swiss German spelling).
