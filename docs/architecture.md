@@ -163,7 +163,9 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      newer one when three or more merges happen within minutes).
 2. On the server: `scripts/auto-update.sh` (cron, every minute for `web`,
    daily for all images) runs `scripts/deploy.sh` when a newer image is
-   available (ADR 0012). `deploy.sh` pulls the repo and all images (`web`,
+   available (ADR 0012). `deploy.sh` checks the site afterwards and rolls
+   back to the previously running images on failure, with an alert mail to
+   `DEPLOY_ALERT_RECIPIENTS` (`manage.py notify_deploy`). `deploy.sh` pulls the repo and all images (`web`,
    `caddy`, `db`), runs `migrate`, then restarts the containers. Rollback:
    `IMAGE_TAG=sha-<commit>`.
    Step by step: [`deployment.md`](deployment.md).

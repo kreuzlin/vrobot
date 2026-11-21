@@ -29,5 +29,10 @@ docker-compose.override.yml
 /data/
 /backups/
 
+# Deploy state on the server (scripts/deploy.sh, scripts/auto-update.sh)
+/.deploy-previous
+/.deploy-failed
+/.deploy-alert
+
 # Server-specific Caddy snippets (see deploy/caddy.d/README.md)
 /deploy/caddy.d/*.caddy
