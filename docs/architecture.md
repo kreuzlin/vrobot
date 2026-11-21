@@ -140,12 +140,16 @@ development Django serves them (`DEBUG` only); in production Caddy does.
      `linux/amd64` image build (PRs: build only, to verify the Dockerfile);
    - push to `main` (i.e. after a merge): the image is pushed to GHCR as
      `ghcr.io/kreuzlin/vrobot:sha-<commit>` and `:latest`;
+   - weekly schedule (Mondays 03:30 UTC) and manual runs on `main`: same
+     pipeline, rebuilt with a freshly pulled base image so base image
+     security fixes reach `latest` between merges;
    - concurrency: a new push to a PR cancels its running check; runs on
      `main` are queued instead, so `latest` is pushed in merge order and each
      merge gets its `sha-<commit>` image (except a pending run replaced by a
      newer one when three or more merges happen within minutes).
-2. On the server: `scripts/deploy.sh` pulls the repo and image, runs
-   `migrate`, then restarts the containers. Rollback: `IMAGE_TAG=sha-<commit>`.
+2. On the server: `scripts/deploy.sh` pulls the repo and all images (`web`,
+   `caddy`, `db`), runs `migrate`, then restarts the containers. Rollback:
+   `IMAGE_TAG=sha-<commit>`.
    Step by step: [`deployment.md`](deployment.md).
 
 Locally (Apple Silicon) the image is built natively for `arm64`; the server

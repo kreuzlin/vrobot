@@ -156,8 +156,9 @@ On the server:
 cd /srv/vrobot && scripts/deploy.sh
 ```
 
-The script pulls the repo and images, runs migrations, restarts the
-containers and removes old images.
+The script pulls the repo and all images (`web`, `caddy`, `db`), runs
+migrations, restarts the containers whose image changed and removes old
+images.
 
 Wait until the CI run for the merge commit has pushed the image
 (`gh run list --branch main --limit 1`), otherwise `latest` is still the
@@ -173,6 +174,33 @@ The commit is baked into the image by CI (`GIT_COMMIT` build arg →
 **Rollback** to an earlier build: set `IMAGE_TAG=sha-<commit>` in `.env` and
 run `scripts/deploy.sh` again (set it back to `latest` afterwards). Migrations
 are not rolled back automatically.
+
+### Container image updates (routine)
+
+The host gets security updates via `unattended-upgrades`, the containers
+only through new images:
+
+- **App image** (`python:3.14-slim` base): CI rebuilds `main` every Monday
+  03:30 UTC with a freshly pulled base image and pushes `latest` (and
+  overwrites `sha-<commit>` of the same commit – same code, newer base).
+  A rebuild can also be started by hand: Actions → CI → "Run workflow" on
+  `main`, or `gh workflow run ci.yml --ref main`.
+- **`caddy:2.10`** and **`postgres:18`**: `scripts/deploy.sh` pulls them on
+  every deploy, so patch releases (Caddy 2.10.x) and PostgreSQL 18.x minor
+  updates are applied then. PostgreSQL briefly restarts when its image
+  changed.
+
+Routine: **every Monday** (at least once a month), after the scheduled run
+is green (`gh run list --workflow ci.yml --limit 3`), run
+`scripts/deploy.sh` on the server and check `https://vrobot.ch/`. The commit
+at `/version` stays the same when only the base image changed.
+
+Not covered, done deliberately in a PR: new minor/major versions (e.g.
+`caddy:2.11`, Python 3.15, the `uv` version in the `Dockerfile`), and
+PostgreSQL major upgrades (19), which need a dump and restore (section 6).
+GitHub disables scheduled workflows after 60 days without repository
+activity; it then shows a notice in the Actions tab and the workflow has to
+be re-enabled there.
 
 ## 5. Scheduled jobs
 

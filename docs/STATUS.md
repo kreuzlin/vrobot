@@ -4,7 +4,7 @@ Current state of vrobot.ch and the next steps. **Every PR updates this file**
 (at least "Last updated" and whatever the PR changes). Details live in the
 linked docs; open work lives in GitHub issues.
 
-_Last updated: 2026-11-18 (PR "Keep the Hostpoint web hosting")_
+_Last updated: 2026-11-21 (PR "Rebuild the image weekly and pull all images on deploy")_
 
 ## Live
 
@@ -30,7 +30,8 @@ _Last updated: 2026-11-18 (PR "Keep the Hostpoint web hosting")_
 | Mail | Hostpoint SMTP, sender `mail@vrobot.ch`; contact form recipient set in the server `.env` |
 | DNS | Hostpoint (`vrobot.ch`, `www`, `www2` → server; MX and mail records unchanged) |
 | Hostpoint web hosting | Kept for other purposes – not used by the website, do not cancel (#25 closed) |
-| CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled |
+| CI | GitHub Actions: lint + tests, `linux/amd64` image to `ghcr.io/kreuzlin/vrobot` (`latest`, `sha-<commit>`) on `main`; runs on `main` are queued, never cancelled; weekly rebuild Mondays 03:30 UTC with a fresh base image |
+| Image updates | Every Monday (at least monthly) `scripts/deploy.sh` after the scheduled build; it pulls `web`, `caddy` and `db` (routine in `deployment.md`) |
 
 Runbook: [`deployment.md`](deployment.md). Architecture:
 [`architecture.md`](architecture.md). Decisions: [`decisions/`](decisions/).
@@ -63,13 +64,14 @@ Overview: `gh issue list`. At the time of writing:
 | #29 | Complete and check content ("Mitglied werden", document years, …) | association |
 | #30 | Check usage rights of images taken over from the old site | association |
 | #31 | Editor accounts for association members | maintainer |
-| #32 | Keep container images up to date (Python base, PostgreSQL, Caddy) | code / ops |
 | #33 | Uptime monitoring, Google Search Console | ops |
 
 ## Next steps
 
-1. #32 (container image updates) – keep the platform healthy.
+1. After merging #32's PR: deploy once (pulls the current `postgres:18` and
+   `caddy:2.10`), then follow the weekly image update routine.
 2. Content issues (#29, #30, #31) with the association.
+3. #33 (uptime monitoring, Search Console), #27 (DKIM/DMARC).
 
 ## Working agreements (summary)
 

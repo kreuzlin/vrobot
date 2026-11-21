@@ -7,7 +7,9 @@ cd "$(dirname "$0")/.."
 compose() { docker compose -f compose.prod.yaml "$@"; }
 
 git pull --ff-only
-compose pull web caddy
+# All images: web (app), caddy (patch releases of the pinned minor tag) and
+# db (PostgreSQL 18.x minor updates; a major upgrade needs dump/restore).
+compose pull
 compose up -d db
 # Migrations run once, before the new version takes traffic.
 compose run --rm web python manage.py migrate --noinput
