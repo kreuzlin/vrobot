@@ -1,7 +1,7 @@
 # Image for the Django app, used for local development and production.
 # Production images are built for linux/amd64 in GitHub Actions (ADR 0006).
 
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 # uv binary, pinned to the version used locally.
 COPY --from=ghcr.io/astral-sh/uv:0.13.8 /uv /uvx /bin/
